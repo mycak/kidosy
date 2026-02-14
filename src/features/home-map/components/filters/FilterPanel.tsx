@@ -1,0 +1,170 @@
+import { Filter, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { AgeRangeFilter } from './AgeRangeFilter';
+import { CategoryMultiSelect } from './CategoryMultiSelect';
+import { OfferTypeMultiSelect } from './OfferTypeMultiSelect';
+import { LocationSearchInput } from './LocationSearchInput';
+import { RadiusSlider } from './RadiusSlider';
+import { ActiveFiltersChips } from './ActiveFiltersChips';
+import type { HomeMapFilters, LocationData } from '../../types';
+
+interface FilterPanelProps {
+  filters: HomeMapFilters;
+  onFiltersChange: (filters: Partial<HomeMapFilters>) => void;
+  onResetFilters: () => void;
+  onRemoveFilter: (filterKey: keyof HomeMapFilters) => void;
+  categories: Array<{ id: string; name: string }>;
+  offerTypes: Array<{ id: string; name: string }>;
+  onUseCurrentLocation?: () => void;
+  isLoadingCurrentLocation?: boolean;
+  isLoadingCategories?: boolean;
+  isLoadingOfferTypes?: boolean;
+}
+
+export function FilterPanel({
+  filters,
+  onFiltersChange,
+  onResetFilters,
+  onRemoveFilter,
+  categories,
+  offerTypes,
+  onUseCurrentLocation,
+  isLoadingCurrentLocation = false,
+  isLoadingCategories = false,
+  isLoadingOfferTypes = false,
+}: FilterPanelProps) {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    onFiltersChange({ search: value || undefined });
+  };
+
+  const handleAgeChange = (
+    minAge: number | undefined,
+    maxAge: number | undefined,
+  ) => {
+    onFiltersChange({ min_age: minAge, max_age: maxAge });
+  };
+
+  const handleCategoriesChange = (categoryIds: string[]) => {
+    onFiltersChange({ categories: categoryIds });
+  };
+
+  const handleOfferTypesChange = (typeIds: string[]) => {
+    onFiltersChange({ offer_types: typeIds });
+  };
+
+  const handleLocationChange = (location: LocationData | null) => {
+    onFiltersChange({
+      location,
+      radius_km: location ? filters.radius_km || 10 : undefined,
+    });
+  };
+
+  const handleRadiusChange = (radiusKm: number | undefined) => {
+    onFiltersChange({ radius_km: radiusKm });
+  };
+
+  const handleRemoveCategory = (categoryId: string) => {
+    const newCategories = filters.categories.filter((id) => id !== categoryId);
+    onFiltersChange({ categories: newCategories });
+  };
+
+  const handleRemoveOfferType = (typeId: string) => {
+    const newTypes = filters.offer_types.filter((id) => id !== typeId);
+    onFiltersChange({ offer_types: newTypes });
+  };
+
+  const hasActiveFilters =
+    filters.min_age !== undefined ||
+    filters.max_age !== undefined ||
+    filters.categories.length > 0 ||
+    filters.offer_types.length > 0 ||
+    filters.location !== null ||
+    filters.search;
+
+  return (
+    <div className='border-b bg-background'>
+      <div className='space-y-4 p-4 lg:p-6'>
+        <div className='flex items-center justify-between'>
+          <div className='flex items-center gap-2'>
+            <Filter className='h-5 w-5 text-muted-foreground' />
+            <h2 className='text-lg font-semibold'>Filtry</h2>
+          </div>
+          {hasActiveFilters && (
+            <Button
+              variant='ghost'
+              size='sm'
+              onClick={onResetFilters}
+              className='gap-1 text-muted-foreground hover:text-foreground'
+            >
+              <X className='h-4 w-4' />
+              Wyczyść wszystko
+            </Button>
+          )}
+        </div>
+
+        <div className='flex flex-col gap-4'>
+          <Input
+            type='text'
+            placeholder='Szukaj zajęć...'
+            value={filters.search || ''}
+            onChange={handleSearchChange}
+            className='w-full'
+            aria-label='Wyszukaj zajęcia'
+          />
+
+          <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+            <CategoryMultiSelect
+              selectedCategories={filters.categories}
+              categories={categories}
+              onChange={handleCategoriesChange}
+              isLoading={isLoadingCategories}
+            />
+
+            <OfferTypeMultiSelect
+              selectedTypes={filters.offer_types}
+              offerTypes={offerTypes}
+              onChange={handleOfferTypesChange}
+              isLoading={isLoadingOfferTypes}
+            />
+
+            <LocationSearchInput
+              location={filters.location}
+              onChange={handleLocationChange}
+              onUseCurrentLocation={onUseCurrentLocation}
+              isLoadingCurrentLocation={isLoadingCurrentLocation}
+            />
+          </div>
+
+          <div className='grid gap-6 sm:grid-cols-2'>
+            <AgeRangeFilter
+              minAge={filters.min_age}
+              maxAge={filters.max_age}
+              onChange={handleAgeChange}
+            />
+
+            <RadiusSlider
+              radiusKm={filters.radius_km}
+              onChange={handleRadiusChange}
+              disabled={!filters.location}
+            />
+          </div>
+        </div>
+
+        {hasActiveFilters && (
+          <div className='pt-2'>
+            <ActiveFiltersChips
+              filters={filters}
+              onRemoveFilter={onRemoveFilter}
+              onRemoveCategory={handleRemoveCategory}
+              onRemoveOfferType={handleRemoveOfferType}
+              categoriesData={categories}
+              offerTypesData={offerTypes}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

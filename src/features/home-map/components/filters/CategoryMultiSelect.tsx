@@ -1,0 +1,94 @@
+import { useState } from 'react';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+
+interface CategoryMultiSelectProps {
+  selectedCategories: string[];
+  categories: Array<{ id: string; name: string }>;
+  onChange: (categoryIds: string[]) => void;
+  isLoading?: boolean;
+}
+
+export function CategoryMultiSelect({
+  selectedCategories,
+  categories,
+  onChange,
+  isLoading = false,
+}: CategoryMultiSelectProps) {
+  const [open, setOpen] = useState(false);
+
+  const toggleCategory = (categoryId: string) => {
+    const newSelection = selectedCategories.includes(categoryId)
+      ? selectedCategories.filter((id) => id !== categoryId)
+      : [...selectedCategories, categoryId];
+    onChange(newSelection);
+  };
+
+  const displayText =
+    selectedCategories.length === 0
+      ? 'Wybierz kategorie'
+      : selectedCategories.length === 1
+        ? categories.find((c) => c.id === selectedCategories[0])?.name ||
+          'Wybrano 1'
+        : `Wybrano ${selectedCategories.length}`;
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant='outline'
+          role='combobox'
+          aria-expanded={open}
+          aria-label='Wybierz kategorie'
+          className='w-full justify-between sm:w-[240px]'
+          disabled={isLoading}
+        >
+          <span className='truncate'>{displayText}</span>
+          <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className='w-[240px] p-0' align='start'>
+        <Command>
+          <CommandInput placeholder='Szukaj kategorii...' />
+          <CommandList>
+            <CommandEmpty>Nie znaleziono kategorii.</CommandEmpty>
+            <CommandGroup>
+              {categories.map((category) => {
+                const isSelected = selectedCategories.includes(category.id);
+                return (
+                  <CommandItem
+                    key={category.id}
+                    value={category.name}
+                    onSelect={() => toggleCategory(category.id)}
+                  >
+                    <Check
+                      className={cn(
+                        'mr-2 h-4 w-4',
+                        isSelected ? 'opacity-100' : 'opacity-0',
+                      )}
+                    />
+                    {category.name}
+                  </CommandItem>
+                );
+              })}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+}
