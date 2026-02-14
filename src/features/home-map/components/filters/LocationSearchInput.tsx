@@ -90,7 +90,7 @@ export function LocationSearchInput({
           placeholder='Wpisz lokalizację...'
           value={inputValue}
           onChange={handleInputChange}
-          className='pl-10 pr-8'
+          className='pl-10 pr-8 border-white/60 bg-white/80 shadow-sm focus-visible:ring-sky-200'
           aria-label='Wyszukaj lokalizację'
         />
         {inputValue && (

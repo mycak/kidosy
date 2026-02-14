@@ -49,7 +49,7 @@ export function RadiusSlider({
         value={[currentRadius]}
         onValueChange={handleValueChange}
         disabled={disabled}
-        className='w-full'
+        className='w-full rounded-full bg-white/60'
         aria-label='Wybierz promień wyszukiwania'
       />
       <div className='flex justify-between text-xs text-muted-foreground'>

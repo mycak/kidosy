@@ -1,5 +1,7 @@
-import { Filter, X } from 'lucide-react';
+import { useState } from 'react';
+import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { AgeRangeFilter } from './AgeRangeFilter';
 import { CategoryMultiSelect } from './CategoryMultiSelect';
@@ -34,6 +36,8 @@ export function FilterPanel({
   isLoadingCategories = false,
   isLoadingOfferTypes = false,
 }: FilterPanelProps) {
+  const [isExpanded, setIsExpanded] = useState(true);
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     onFiltersChange({ search: value || undefined });
@@ -84,86 +88,102 @@ export function FilterPanel({
     filters.search;
 
   return (
-    <div className='border-b bg-background'>
-      <div className='space-y-4 p-4 lg:p-6'>
-        <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-2'>
-            <Filter className='h-5 w-5 text-muted-foreground' />
-            <h2 className='text-lg font-semibold'>Filtry</h2>
-          </div>
-          {hasActiveFilters && (
-            <Button
-              variant='ghost'
-              size='sm'
-              onClick={onResetFilters}
-              className='gap-1 text-muted-foreground hover:text-foreground'
-            >
-              <X className='h-4 w-4' />
-              Wyczyść wszystko
-            </Button>
-          )}
-        </div>
+    <div className='border-b border-white/50 bg-gradient-to-r from-white/70 via-emerald-50/70 to-rose-50/70 backdrop-blur'>
+      <div className='p-4 lg:p-6'>
+        <Card className='border-white/60 bg-white/80 shadow-sm'>
+          <CardContent className='p-4 lg:p-6'>
+            <div className='flex items-center justify-between'>
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className='flex items-center gap-2 hover:opacity-70 transition-opacity'
+                aria-expanded={isExpanded}
+                aria-label={isExpanded ? 'Zwiń filtry' : 'Rozwiń filtry'}
+              >
+                <Filter className='h-5 w-5 text-muted-foreground' />
+                <h2 className='text-lg font-semibold'>Filtry</h2>
+                {isExpanded ? (
+                  <ChevronUp className='h-5 w-5 text-muted-foreground' />
+                ) : (
+                  <ChevronDown className='h-5 w-5 text-muted-foreground' />
+                )}
+              </button>
+              {hasActiveFilters && (
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  onClick={onResetFilters}
+                  className='gap-1 text-muted-foreground hover:text-foreground'
+                >
+                  <X className='h-4 w-4' />
+                  Wyczyść wszystko
+                </Button>
+              )}
+            </div>
 
-        <div className='flex flex-col gap-4'>
-          <Input
-            type='text'
-            placeholder='Szukaj zajęć...'
-            value={filters.search || ''}
-            onChange={handleSearchChange}
-            className='w-full'
-            aria-label='Wyszukaj zajęcia'
-          />
+            {isExpanded && (
+              <div className='mt-4 flex flex-col gap-4'>
+                <Input
+                  type='text'
+                  placeholder='Szukaj zajęć...'
+                  value={filters.search || ''}
+                  onChange={handleSearchChange}
+                  className='w-full border-white/60 bg-white/80 shadow-sm focus-visible:ring-sky-200'
+                  aria-label='Wyszukaj zajęcia'
+                />
 
-          <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-            <CategoryMultiSelect
-              selectedCategories={filters.categories}
-              categories={categories}
-              onChange={handleCategoriesChange}
-              isLoading={isLoadingCategories}
-            />
+                <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+                  <CategoryMultiSelect
+                    selectedCategories={filters.categories}
+                    categories={categories}
+                    onChange={handleCategoriesChange}
+                    isLoading={isLoadingCategories}
+                  />
 
-            <OfferTypeMultiSelect
-              selectedTypes={filters.offer_types}
-              offerTypes={offerTypes}
-              onChange={handleOfferTypesChange}
-              isLoading={isLoadingOfferTypes}
-            />
+                  <OfferTypeMultiSelect
+                    selectedTypes={filters.offer_types}
+                    offerTypes={offerTypes}
+                    onChange={handleOfferTypesChange}
+                    isLoading={isLoadingOfferTypes}
+                  />
 
-            <LocationSearchInput
-              location={filters.location}
-              onChange={handleLocationChange}
-              onUseCurrentLocation={onUseCurrentLocation}
-              isLoadingCurrentLocation={isLoadingCurrentLocation}
-            />
-          </div>
+                  <LocationSearchInput
+                    location={filters.location}
+                    onChange={handleLocationChange}
+                    onUseCurrentLocation={onUseCurrentLocation}
+                    isLoadingCurrentLocation={isLoadingCurrentLocation}
+                  />
+                </div>
 
-          <div className='grid gap-6 sm:grid-cols-2'>
-            <AgeRangeFilter
-              minAge={filters.min_age}
-              maxAge={filters.max_age}
-              onChange={handleAgeChange}
-            />
+                <div className='grid gap-6 sm:grid-cols-2'>
+                  <AgeRangeFilter
+                    minAge={filters.min_age}
+                    maxAge={filters.max_age}
+                    onChange={handleAgeChange}
+                  />
 
-            <RadiusSlider
-              radiusKm={filters.radius_km}
-              onChange={handleRadiusChange}
-              disabled={!filters.location}
-            />
-          </div>
-        </div>
+                  <RadiusSlider
+                    radiusKm={filters.radius_km}
+                    onChange={handleRadiusChange}
+                    disabled={!filters.location}
+                  />
+                </div>
 
-        {hasActiveFilters && (
-          <div className='pt-2'>
-            <ActiveFiltersChips
-              filters={filters}
-              onRemoveFilter={onRemoveFilter}
-              onRemoveCategory={handleRemoveCategory}
-              onRemoveOfferType={handleRemoveOfferType}
-              categoriesData={categories}
-              offerTypesData={offerTypes}
-            />
-          </div>
-        )}
+                {hasActiveFilters && (
+                  <div className='pt-2'>
+                    <ActiveFiltersChips
+                      filters={filters}
+                      onRemoveFilter={onRemoveFilter}
+                      onRemoveCategory={handleRemoveCategory}
+                      onRemoveOfferType={handleRemoveOfferType}
+                      categoriesData={categories}
+                      offerTypesData={offerTypes}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

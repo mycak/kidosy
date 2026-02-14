@@ -53,16 +53,22 @@ export function OfferTypeMultiSelect({
           role='combobox'
           aria-expanded={open}
           aria-label='Wybierz typ zajęć'
-          className='w-full justify-between sm:w-[200px]'
+          className='w-full justify-between border-white/60 bg-white/80 shadow-sm sm:w-[200px]'
           disabled={isLoading}
         >
           <span className='truncate'>{displayText}</span>
           <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='w-[200px] p-0' align='start'>
-        <Command>
-          <CommandInput placeholder='Szukaj typu...' />
+      <PopoverContent
+        className='w-[200px] border-white/70 bg-white/90 p-0 shadow-md'
+        align='start'
+      >
+        <Command className='bg-transparent'>
+          <CommandInput
+            placeholder='Szukaj typu...'
+            className='border-b border-white/70 bg-white/70'
+          />
           <CommandList>
             <CommandEmpty>Nie znaleziono typu.</CommandEmpty>
             <CommandGroup>

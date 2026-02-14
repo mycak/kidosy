@@ -237,6 +237,12 @@ export type GeoPointDto = {
   coordinates: [number, number]; // [longitude, latitude]
 };
 
+export type LocationData = {
+  lat: number;
+  lon: number;
+  name: string;
+};
+
 // =============================================================================
 // OFFER DTOs - Public Discovery
 // =============================================================================

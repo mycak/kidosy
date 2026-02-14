@@ -48,7 +48,7 @@ export function AgeRangeFilter({
         step={1}
         value={[currentMin, currentMax]}
         onValueChange={handleValueChange}
-        className='w-full'
+        className='w-full rounded-full bg-white/60'
         aria-label='Wybierz zakres wieku'
       />
       <div className='flex justify-between text-xs text-muted-foreground'>
