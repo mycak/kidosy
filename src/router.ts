@@ -1,7 +1,15 @@
 import { createRouter } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
+import type { QueryClient } from '@tanstack/react-query';
 
-export const router = createRouter({ routeTree });
+interface RouterContext {
+  queryClient: QueryClient;
+}
+
+export const router = createRouter<RouterContext>({
+  routeTree,
+  context: undefined!,
+});
 
 declare module '@tanstack/react-router' {
   interface Register {

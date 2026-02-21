@@ -91,7 +91,7 @@ export function FilterPanel({
     <div className='border-b border-white/50 bg-gradient-to-r from-white/70 via-emerald-50/70 to-rose-50/70 backdrop-blur'>
       <div className='p-4 lg:p-6'>
         <Card className='border-white/60 bg-white/80 shadow-sm'>
-          <CardContent className='p-4 lg:p-6'>
+          <CardContent className='px-4 py-0 lg:px-6 lg:py-0'>
             <div className='flex items-center justify-between'>
               <button
                 onClick={() => setIsExpanded(!isExpanded)}

@@ -14,6 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { translateCategory } from '@/lib/translations';
 import { cn } from '@/lib/utils';
 
 interface CategoryMultiSelectProps {
@@ -42,8 +43,9 @@ export function CategoryMultiSelect({
     selectedCategories.length === 0
       ? 'Wybierz kategorie'
       : selectedCategories.length === 1
-        ? categories.find((c) => c.id === selectedCategories[0])?.name ||
-          'Wybrano 1'
+        ? translateCategory(
+            categories.find((c) => c.id === selectedCategories[0])?.name || '',
+          )
         : `Wybrano ${selectedCategories.length}`;
 
   return (
@@ -83,11 +85,11 @@ export function CategoryMultiSelect({
                   >
                     <Check
                       className={cn(
-                        'mr-2 h-4 w-4',
+                        'mr-2 h-4 w-4 text-emerald-600',
                         isSelected ? 'opacity-100' : 'opacity-0',
                       )}
                     />
-                    {category.name}
+                    {translateCategory(category.name)}
                   </CommandItem>
                 );
               })}

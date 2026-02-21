@@ -1,4 +1,5 @@
 import { X, MapPin, Calendar, Users } from 'lucide-react';
+import { translateCategory } from '@/lib/translations';
 import type { PublicOfferListItemDto } from '@/types';
 
 interface OfferQuickPreviewProps {
@@ -68,7 +69,7 @@ export function OfferQuickPreview({ offer, onClose }: OfferQuickPreviewProps) {
                 key={category.id}
                 className='rounded-full bg-gradient-to-r from-emerald-100 via-sky-100 to-rose-100 px-2 py-1 text-xs font-medium text-emerald-700'
               >
-                {category.name}
+                {translateCategory(category.name)}
               </span>
             ))}
             {offer.categories.length > 2 && (

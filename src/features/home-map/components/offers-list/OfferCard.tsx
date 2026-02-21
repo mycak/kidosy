@@ -1,5 +1,7 @@
-import { Calendar, MapPin, Users } from 'lucide-react';
+import { Calendar, MapPin, Users, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { translateCategory } from '@/lib/translations';
 import type { PublicOfferListItemDto } from '@/types';
 
 interface OfferCardProps {
@@ -39,7 +41,6 @@ export function OfferCard({
         <p className='text-muted-foreground line-clamp-2'>
           {offer.description}
         </p>
-
         <div className='space-y-2'>
           <div className='flex items-center gap-2'>
             <MapPin className='h-4 w-4 text-muted-foreground' />
@@ -62,20 +63,18 @@ export function OfferCard({
             </div>
           )}
         </div>
-
         {offer.available_spots !== undefined && (
           <div className='text-xs font-medium text-primary'>
             Wolne miejsca: {offer.available_spots}
           </div>
         )}
-
         <div className='flex flex-wrap gap-1'>
           {offer.categories.slice(0, CATEGORY_LIMIT).map((category) => (
             <span
               key={category.id}
               className='rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary'
             >
-              {category.name}
+              {translateCategory(category.name)}
             </span>
           ))}
           {offer.categories.length > CATEGORY_LIMIT && (
@@ -84,6 +83,20 @@ export function OfferCard({
             </span>
           )}
         </div>
+        <div className='pt-2'>
+          <a
+            href={`/offers/${offer.id}`}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            className='block w-full'
+          >
+            <Button className='w-full gap-2' size='sm'>
+              Szczegóły
+              <ArrowRight className='h-4 w-4' />
+            </Button>
+          </a>
+        </div>{' '}
       </CardContent>
     </Card>
   );

@@ -14,6 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { translateOfferType } from '@/lib/translations';
 import { cn } from '@/lib/utils';
 
 interface OfferTypeMultiSelectProps {
@@ -42,7 +43,9 @@ export function OfferTypeMultiSelect({
     selectedTypes.length === 0
       ? 'Typ zajęć'
       : selectedTypes.length === 1
-        ? offerTypes.find((t) => t.id === selectedTypes[0])?.name || 'Wybrano 1'
+        ? translateOfferType(
+            offerTypes.find((t) => t.id === selectedTypes[0])?.name || '',
+          )
         : `Wybrano ${selectedTypes.length}`;
 
   return (
@@ -82,11 +85,11 @@ export function OfferTypeMultiSelect({
                   >
                     <Check
                       className={cn(
-                        'mr-2 h-4 w-4',
+                        'mr-2 h-4 w-4 text-emerald-600',
                         isSelected ? 'opacity-100' : 'opacity-0',
                       )}
                     />
-                    {type.name}
+                    {translateOfferType(type.name)}
                   </CommandItem>
                 );
               })}

@@ -25,7 +25,7 @@ export function App() {
   return (
     <SupabaseProvider client={supabaseClient}>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <RouterProvider router={router} context={{ queryClient }} />
         {import.meta.env.DEV && <ReactQueryDevtools />}
       </QueryClientProvider>
     </SupabaseProvider>
