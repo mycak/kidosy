@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { GeoPointDto } from '../types';
+import { useGoogleMapsLoader } from '@/features/home-map/hooks/useGoogleMapsLoader';
 
 interface OfferLocationMapProps {
   location: GeoPointDto;
@@ -9,9 +10,12 @@ interface OfferLocationMapProps {
 export function OfferLocationMap({ location, address }: OfferLocationMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const googleMapRef = useRef<google.maps.Map | null>(null);
+  const { isLoaded, error } = useGoogleMapsLoader();
 
   useEffect(() => {
-    if (!mapRef.current || !window.google) return;
+    if (!isLoaded || !mapRef.current || !window.google) {
+      return;
+    }
 
     const [lng, lat] = location.coordinates;
     const position = { lat, lng };
@@ -31,7 +35,7 @@ export function OfferLocationMap({ location, address }: OfferLocationMapProps) {
     });
 
     googleMapRef.current = map;
-  }, [location, address]);
+  }, [address, isLoaded, location]);
 
   return (
     <section className='bg-white rounded-lg border p-6'>
@@ -43,12 +47,27 @@ export function OfferLocationMap({ location, address }: OfferLocationMapProps) {
           <span className='font-medium'>{address}</span>
         </div>
 
-        <div
-          ref={mapRef}
-          className='w-full h-64 md:h-96 rounded-lg overflow-hidden'
-          role='img'
-          aria-label={`Mapa lokalizacji: ${address}`}
-        />
+        {error ? (
+          <div className='w-full h-64 md:h-96 rounded-lg border bg-gray-50 flex items-center justify-center px-4 text-center'>
+            <p className='text-sm text-gray-600'>
+              Nie udało się załadować mapy. Sprawdź konfigurację klucza Google
+              Maps.
+            </p>
+          </div>
+        ) : (
+          <div
+            ref={mapRef}
+            className='w-full h-64 md:h-96 rounded-lg overflow-hidden bg-gray-100'
+            role='img'
+            aria-label={`Mapa lokalizacji: ${address}`}
+          >
+            {!isLoaded && (
+              <div className='w-full h-full flex items-center justify-center'>
+                <p className='text-sm text-gray-500'>Ładowanie mapy...</p>
+              </div>
+            )}
+          </div>
+        )}
 
         <a
           href={`https://www.google.com/maps/search/?api=1&query=${location.coordinates[1]},${location.coordinates[0]}`}

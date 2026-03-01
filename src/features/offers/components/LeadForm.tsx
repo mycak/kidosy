@@ -1,8 +1,16 @@
 import { useForm } from '@tanstack/react-form';
 import { useCreateLead } from '../queries/useCreateLead';
 import { createLeadSchema, type CreateLeadFormData } from '../types';
-import { useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
+
+const MIN_CHILDREN_COUNT = 1;
+const MAX_CHILDREN_COUNT = 10;
+
+const DEFAULT_CHILD_VALUE: CreateLeadFormData['children'][number] = {
+  name: '',
+  age: 0,
+  interests: [],
+};
 
 interface LeadFormProps {
   offerId: string;
@@ -12,7 +20,6 @@ interface LeadFormProps {
 
 export function LeadForm({ offerId, onSuccess, onCancel }: LeadFormProps) {
   const createLeadMutation = useCreateLead();
-  const [childrenCount, setChildrenCount] = useState(1);
 
   const form = useForm({
     defaultValues: {
@@ -36,6 +43,7 @@ export function LeadForm({ offerId, onSuccess, onCancel }: LeadFormProps) {
           offerId,
           data: result.data,
         });
+        // TODO: Add sending a confirmation email to the parent after successful lead creation.
         onSuccess();
       } catch (error) {
         console.error('Lead submission failed:', error);
@@ -43,24 +51,38 @@ export function LeadForm({ offerId, onSuccess, onCancel }: LeadFormProps) {
     },
   });
 
-  const addChild = () => {
-    if (childrenCount < 10) {
-      setChildrenCount((prev) => prev + 1);
-      form.setFieldValue('children', [
-        ...form.state.values.children,
-        { name: '', age: 0, interests: [] },
-      ]);
+  const addChild = (children: CreateLeadFormData['children']) => {
+    const childrenCount = children.length;
+    if (childrenCount < MAX_CHILDREN_COUNT) {
+      form.setFieldValue('children', [...children, DEFAULT_CHILD_VALUE]);
     }
   };
 
-  const removeChild = (index: number) => {
-    if (childrenCount > 1) {
-      setChildrenCount((prev) => prev - 1);
-      const newChildren = form.state.values.children.filter(
-        (_, i) => i !== index,
+  const removeChild = (
+    children: CreateLeadFormData['children'],
+    index: number,
+  ) => {
+    const childrenCount = children.length;
+    if (childrenCount > MIN_CHILDREN_COUNT) {
+      const newChildren = children.filter(
+        (_, childIndex) => childIndex !== index,
       );
       form.setFieldValue('children', newChildren);
     }
+  };
+
+  const updateChild = (
+    children: CreateLeadFormData['children'],
+    index: number,
+    childUpdate: Partial<CreateLeadFormData['children'][number]>,
+  ) => {
+    const nextChildren = [...children];
+    const currentChild = nextChildren[index] ?? DEFAULT_CHILD_VALUE;
+    nextChildren[index] = {
+      ...currentChild,
+      ...childUpdate,
+    };
+    form.setFieldValue('children', nextChildren);
   };
 
   return (
@@ -219,91 +241,95 @@ export function LeadForm({ offerId, onSuccess, onCancel }: LeadFormProps) {
           </form.Field>
         </div>
 
-        <div className='space-y-4 pt-4 border-t'>
-          <div className='flex items-center justify-between'>
-            <h4 className='font-semibold text-gray-900'>Dane dziecka/dzieci</h4>
-            {childrenCount < 10 && (
-              <button
-                type='button'
-                onClick={addChild}
-                className='px-3 py-1 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors flex items-center gap-1 text-sm'
-              >
-                <Plus className='w-4 h-4' />
-                Dodaj dziecko
-              </button>
-            )}
-          </div>
-
-          {Array.from({ length: childrenCount }).map((_, index) => {
-            const child = form.state.values.children[index];
+        <form.Field name='children'>
+          {(childrenField) => {
+            const children = childrenField.state.value;
+            const childrenCount = children.length;
 
             return (
-              <div key={index} className='bg-gray-50 p-4 rounded-lg space-y-3'>
+              <div className='space-y-4 pt-4 border-t'>
                 <div className='flex items-center justify-between'>
-                  <h5 className='font-medium'>Dziecko {index + 1}</h5>
-                  {childrenCount > 1 && (
+                  <h4 className='font-semibold text-gray-900'>
+                    Dane dziecka/dzieci
+                  </h4>
+                  {childrenCount < MAX_CHILDREN_COUNT && (
                     <button
                       type='button'
-                      onClick={() => removeChild(index)}
-                      className='text-red-600 hover:text-red-700'
-                      aria-label={`Usuń dziecko ${index + 1}`}
+                      onClick={() => addChild(children)}
+                      className='px-3 py-1 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors flex items-center gap-1 text-sm'
                     >
-                      <Trash2 className='w-4 h-4' />
+                      <Plus className='w-4 h-4' />
+                      Dodaj dziecko
                     </button>
                   )}
                 </div>
 
-                <div>
-                  <label
-                    htmlFor={`child-name-${index}`}
-                    className='block text-sm font-medium mb-1'
+                {children.map((child, index) => (
+                  <div
+                    key={index}
+                    className='bg-gray-50 p-4 rounded-lg space-y-3'
                   >
-                    Imię dziecka <span className='text-red-500'>*</span>
-                  </label>
-                  <input
-                    id={`child-name-${index}`}
-                    type='text'
-                    value={child?.name || ''}
-                    onChange={(e) => {
-                      const newChildren = [...form.state.values.children];
-                      newChildren[index] = {
-                        ...newChildren[index],
-                        name: e.target.value,
-                      };
-                      form.setFieldValue('children', newChildren);
-                    }}
-                    className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary'
-                  />
-                </div>
+                    <div className='flex items-center justify-between'>
+                      <h5 className='font-medium'>Dziecko {index + 1}</h5>
+                      {childrenCount > MIN_CHILDREN_COUNT && (
+                        <button
+                          type='button'
+                          onClick={() => removeChild(children, index)}
+                          className='text-red-600 hover:text-red-700'
+                          aria-label={`Usuń dziecko ${index + 1}`}
+                        >
+                          <Trash2 className='w-4 h-4' />
+                        </button>
+                      )}
+                    </div>
 
-                <div>
-                  <label
-                    htmlFor={`child-age-${index}`}
-                    className='block text-sm font-medium mb-1'
-                  >
-                    Wiek dziecka <span className='text-red-500'>*</span>
-                  </label>
-                  <input
-                    id={`child-age-${index}`}
-                    type='number'
-                    min='1'
-                    max='100'
-                    value={child?.age || ''}
-                    onChange={(e) => {
-                      const newChildren = [...form.state.values.children];
-                      newChildren[index] = {
-                        ...newChildren[index],
-                        age: Number(e.target.value),
-                      };
-                      form.setFieldValue('children', newChildren);
-                    }}
-                    className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary'
-                  />
-                </div>
+                    <div>
+                      <label
+                        htmlFor={`child-name-${index}`}
+                        className='block text-sm font-medium mb-1'
+                      >
+                        Imię dziecka <span className='text-red-500'>*</span>
+                      </label>
+                      <input
+                        id={`child-name-${index}`}
+                        type='text'
+                        value={child.name}
+                        onChange={(e) =>
+                          updateChild(children, index, { name: e.target.value })
+                        }
+                        className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary'
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor={`child-age-${index}`}
+                        className='block text-sm font-medium mb-1'
+                      >
+                        Wiek dziecka <span className='text-red-500'>*</span>
+                      </label>
+                      <input
+                        id={`child-age-${index}`}
+                        type='number'
+                        min='1'
+                        max='100'
+                        value={child.age > 0 ? String(child.age) : ''}
+                        onChange={(e) => {
+                          const nextAge =
+                            e.target.value === '' ? 0 : Number(e.target.value);
+                          updateChild(children, index, {
+                            age: Number.isNaN(nextAge) ? 0 : nextAge,
+                          });
+                        }}
+                        className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary'
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
             );
-          })}
-        </div>
+          }}
+        </form.Field>
 
         <form.Field name='additional_message'>
           {(field) => (

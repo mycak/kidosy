@@ -85,8 +85,10 @@ export function OfferTypeMultiSelect({
                   >
                     <Check
                       className={cn(
-                        'mr-2 h-4 w-4 text-emerald-600',
-                        isSelected ? 'opacity-100' : 'opacity-0',
+                        'mr-2 h-4 w-4',
+                        isSelected
+                          ? 'text-emerald-600 opacity-100'
+                          : 'text-muted-foreground/90 opacity-100',
                       )}
                     />
                     {translateOfferType(type.name)}

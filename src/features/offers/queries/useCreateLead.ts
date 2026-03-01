@@ -28,7 +28,7 @@ export const useCreateLead = () => {
         p_parent_email: data.email,
         p_parent_phone: data.phone,
         p_parent_name: data.name,
-        p_children: JSON.stringify(data.children),
+        p_children: data.children,
         p_contact_preference: data.contact_preference,
         p_additional_message: data.additional_message,
         p_consent_communication: data.consent_communication,

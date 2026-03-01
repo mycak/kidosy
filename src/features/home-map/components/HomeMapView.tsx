@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
+import { SlidersHorizontal } from 'lucide-react';
 import { Route } from '@/routes/index';
 import { useHomeMapFilters } from '../hooks/useHomeMapFilters';
 import {
@@ -11,6 +12,15 @@ import { useGeolocation } from '../hooks/useGeolocation';
 import { FilterPanel } from './filters/FilterPanel';
 import { MapSection } from './map/MapSection';
 import { OffersListSection } from './offers-list/OffersListSection';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import type { OfferListQueryDto } from '@/types';
 import type { HomeMapFilters, SortBy, SortOrder } from '../types';
 import type { HomeMapSearchParams } from '../schemas';
@@ -32,6 +42,7 @@ export function HomeMapView() {
     useHomeMapFilters(search);
   const [selectedOfferId, setSelectedOfferId] = useState<string | null>(null);
   const [hoveredOfferId, setHoveredOfferId] = useState<string | null>(null);
+  const [isFiltersDialogOpen, setIsFiltersDialogOpen] = useState(false);
 
   const { getCurrentLocation, isLoading: isLoadingLocation } = useGeolocation();
 
@@ -57,13 +68,13 @@ export function HomeMapView() {
 
   const { data, isLoading, isError, error } = useOffersQuery(apiFilters);
 
-  const handleOfferSelect = (offerId: string | null) => {
+  const handleOfferSelect = useCallback((offerId: string | null) => {
     setSelectedOfferId(offerId);
-  };
+  }, []);
 
-  const handleOfferHover = (offerId: string | null) => {
+  const handleOfferHover = useCallback((offerId: string | null) => {
     setHoveredOfferId(offerId);
-  };
+  }, []);
 
   const fitBoundsKey = [
     filters.min_age ?? '',
@@ -139,7 +150,7 @@ export function HomeMapView() {
   }
 
   return (
-    <main className='flex h-screen flex-col bg-gradient-to-br from-sky-50 via-emerald-50 to-rose-50'>
+    <main className='flex h-dvh flex-col overflow-hidden bg-linear-to-br from-sky-50 via-emerald-50 to-rose-50'>
       <header className='border-b border-white/50 bg-white/70 p-4 backdrop-blur'>
         <div className='mb-3'>
           <h1 className='text-3xl font-bold tracking-tight sm:text-4xl'>
@@ -156,23 +167,49 @@ export function HomeMapView() {
         </div>
       </header>
 
-      <div className='h-1 bg-gradient-to-r from-sky-200 via-emerald-200 to-rose-200' />
+      <div className='h-1 bg-linear-to-r from-sky-200 via-emerald-200 to-rose-200' />
 
-      <FilterPanel
-        filters={filters}
-        onFiltersChange={handleFiltersChange}
-        onResetFilters={resetFilters}
-        onRemoveFilter={removeFilter}
-        categories={categoriesData || []}
-        offerTypes={offerTypesData || []}
-        onUseCurrentLocation={handleUseCurrentLocation}
-        isLoadingCurrentLocation={isLoadingLocation}
-        isLoadingCategories={isLoadingCategories}
-        isLoadingOfferTypes={isLoadingOfferTypes}
-      />
+      <div className='flex min-h-0 flex-1 flex-col overflow-hidden lg:flex-row'>
+        <section className='relative min-h-64 flex-1 p-4 lg:min-h-0 lg:w-3/5'>
+          <Dialog
+            open={isFiltersDialogOpen}
+            onOpenChange={setIsFiltersDialogOpen}
+          >
+            <DialogTrigger asChild>
+              <Button
+                type='button'
+                variant='secondary'
+                className='absolute left-8 top-8 z-20 gap-2 rounded-full border border-white/80 bg-white/95 px-4 py-2 text-sm shadow-md backdrop-blur hover:bg-white'
+              >
+                <SlidersHorizontal className='h-4 w-4' />
+                Filtry
+              </Button>
+            </DialogTrigger>
+            <DialogContent className='max-h-[90dvh] max-w-[calc(100vw-2rem)] overflow-y-auto p-5 sm:max-w-[calc(100vw-3rem)] sm:p-6 lg:max-w-300'>
+              <DialogHeader>
+                <DialogTitle>Filtry wyszukiwania</DialogTitle>
+                <DialogDescription className='sr-only'>
+                  Zmień filtry wyszukiwania ofert. Możesz zawęzić wyniki według
+                  kategorii, typu zajęć, wieku i lokalizacji.
+                </DialogDescription>
+              </DialogHeader>
+              <FilterPanel
+                filters={filters}
+                onFiltersChange={handleFiltersChange}
+                onResetFilters={resetFilters}
+                onRemoveFilter={removeFilter}
+                categories={categoriesData || []}
+                offerTypes={offerTypesData || []}
+                onUseCurrentLocation={handleUseCurrentLocation}
+                isLoadingCurrentLocation={isLoadingLocation}
+                isLoadingCategories={isLoadingCategories}
+                isLoadingOfferTypes={isLoadingOfferTypes}
+                variant='dialog'
+                isCollapsible={false}
+              />
+            </DialogContent>
+          </Dialog>
 
-      <div className='flex flex-1 flex-col lg:flex-row'>
-        <section className='relative min-h-64 flex-1 p-4 lg:min-h-auto lg:w-3/5'>
           <div className='h-full overflow-hidden rounded-2xl border border-white/70 bg-white/70 shadow-sm'>
             <MapSection
               offers={data?.data || []}

@@ -42,6 +42,8 @@ export function GoogleMapContainer({
   const markerByOfferIdRef = useRef<Record<string, google.maps.Marker>>({});
   const lastFitBoundsKeyRef = useRef<string>('');
   const hasUserDraggedRef = useRef(false);
+  const selectedOfferIdRef = useRef<string | null>(selectedOfferId);
+  const hoveredOfferIdRef = useRef<string | null>(hoveredOfferId);
   const isDrawingRef = useRef(false);
   const startLatLngRef = useRef<google.maps.LatLng | null>(null);
   const rectangleRef = useRef<google.maps.Rectangle | null>(null);
@@ -57,8 +59,8 @@ export function GoogleMapContainer({
 
   const updateMarkerStates = useCallback(() => {
     Object.entries(markerByOfferIdRef.current).forEach(([offerId, marker]) => {
-      const isSelected = offerId === selectedOfferId;
-      const isHovered = !isSelected && offerId === hoveredOfferId;
+      const isSelected = offerId === selectedOfferIdRef.current;
+      const isHovered = !isSelected && offerId === hoveredOfferIdRef.current;
       const state = isSelected ? 'selected' : isHovered ? 'hover' : 'default';
       marker.setIcon(createMarkerIcon(state));
       marker.setAnimation(isSelected ? google.maps.Animation.BOUNCE : null);
@@ -66,7 +68,13 @@ export function GoogleMapContainer({
         isSelected ? google.maps.Marker.MAX_ZINDEX + 1 : undefined,
       );
     });
-  }, [hoveredOfferId, selectedOfferId]);
+  }, []);
+
+  useEffect(() => {
+    selectedOfferIdRef.current = selectedOfferId;
+    hoveredOfferIdRef.current = hoveredOfferId;
+    updateMarkerStates();
+  }, [hoveredOfferId, selectedOfferId, updateMarkerStates]);
 
   const onLoad = useCallback((mapInstance: google.maps.Map) => {
     setMap(mapInstance);
@@ -167,8 +175,6 @@ export function GoogleMapContainer({
   }, [map, onOfferSelect]);
 
   useEffect(() => {
-    updateMarkerStates();
-
     if (!map || !selectedOffer?.location?.coordinates) {
       return;
     }
@@ -176,11 +182,7 @@ export function GoogleMapContainer({
     const [lng, lat] = selectedOffer.location.coordinates;
     map.panTo({ lat, lng });
     map.setZoom(MARKER_ZOOM);
-  }, [map, selectedOffer, updateMarkerStates]);
-
-  useEffect(() => {
-    updateMarkerStates();
-  }, [hoveredOfferId, updateMarkerStates]);
+  }, [map, selectedOffer]);
 
   const handleClosePreview = useCallback(() => {
     onOfferSelect(null);

@@ -1,11 +1,20 @@
 import { useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ImageIcon, X } from 'lucide-react';
 import type { OfferImageDto } from '../types';
 
 interface OfferImageGalleryProps {
   images: OfferImageDto[];
 }
+
+const KIDOSY_LOGO_LETTERS = [
+  { letter: 'K', className: 'text-sky-500' },
+  { letter: 'i', className: 'text-emerald-500' },
+  { letter: 'd', className: 'text-rose-400' },
+  { letter: 'o', className: 'text-amber-400' },
+  { letter: 's', className: 'text-violet-400' },
+  { letter: 'y', className: 'text-teal-500' },
+] as const;
 
 export function OfferImageGallery({ images }: OfferImageGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -13,8 +22,21 @@ export function OfferImageGallery({ images }: OfferImageGalleryProps) {
 
   if (!images || images.length === 0) {
     return (
-      <div className='aspect-video bg-gray-100 rounded-lg flex items-center justify-center'>
-        <p className='text-gray-500'>Brak zdjęć</p>
+      <div className='h-36 md:h-40 bg-gray-50 rounded-lg border flex items-center justify-center'>
+        <div className='flex flex-col items-center gap-1.5 text-gray-500'>
+          <div className='text-base font-bold tracking-tight'>
+            {KIDOSY_LOGO_LETTERS.map((logoLetter, index) => (
+              <span
+                key={`${logoLetter.letter}-${index}`}
+                className={logoLetter.className}
+              >
+                {logoLetter.letter}
+              </span>
+            ))}
+          </div>
+          <ImageIcon className='w-6 h-6' />
+          <p className='text-xs font-medium'>Brak zdjęć dla tej oferty</p>
+        </div>
       </div>
     );
   }

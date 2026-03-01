@@ -42,7 +42,7 @@ export function OffersListSection({
   const currentPage = pagination?.page ?? 1;
 
   return (
-    <section className='m-4 flex flex-1 flex-col rounded-2xl border border-white/70 bg-gradient-to-br from-white/80 via-emerald-50/70 to-rose-50/70 shadow-sm lg:w-2/5'>
+    <section className='m-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-white/70 bg-linear-to-br from-white/80 via-emerald-50/70 to-rose-50/70 shadow-sm lg:w-2/5'>
       <div className='border-b p-4'>
         <OffersListHeader
           totalResults={totalResults}
