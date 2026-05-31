@@ -9,7 +9,7 @@ import {
 } from '@/features/organizer/api/organizer.queries';
 import { OrganizerToast } from '@/features/organizer/components/common/OrganizerToast';
 import { OrganizerOfferForm } from '@/features/organizer/components/offers/OrganizerOfferForm';
-import type { OrganizerOfferFormValues } from '@/features/organizer/api/organizer.types';
+import type { OrganizerOfferSubmitValues } from '@/features/organizer/api/organizer.types';
 
 const TOAST_AUTO_CLOSE_TIMEOUT_MS = 3000;
 
@@ -45,7 +45,7 @@ function OrganizerOffersEditRoute() {
     };
   }, [toast]);
 
-  const handleSubmit = async (offerValues: OrganizerOfferFormValues) => {
+  const handleSubmit = async (offerValues: OrganizerOfferSubmitValues) => {
     setToast(null);
 
     try {

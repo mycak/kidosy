@@ -1,16 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import type { CategoryDto, OfferTypeDto } from '@/types';
-import type { OrganizerOfferFormValues } from '@/features/organizer/api/organizer.types';
+import type {
+  OrganizerOfferFormValues,
+  OrganizerOfferSubmitValues,
+} from '@/features/organizer/api/organizer.types';
 import { buildDefaultOfferFormValues } from '@/features/organizer/api/organizer.api';
 import { organizerOfferFormSchema } from '@/features/organizer/schemas/offer-form.schema';
 
 const VALIDATION_ISSUE_PATH_INDEX = 0;
+const MAX_MAIN_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+const MAIN_IMAGE_ERROR_KEY = 'mainImageFile';
 
 type OrganizerOfferFormFieldName = keyof OrganizerOfferFormValues;
 
 type OrganizerOfferFormErrors = Partial<
-  Record<OrganizerOfferFormFieldName | 'form', string>
+  Record<OrganizerOfferFormFieldName | typeof MAIN_IMAGE_ERROR_KEY | 'form', string>
 >;
 
 type OrganizerOfferFormProps = {
@@ -19,7 +24,7 @@ type OrganizerOfferFormProps = {
   initialValues: OrganizerOfferFormValues | null;
   isPending: boolean;
   submitLabel: string;
-  onSubmit: (values: OrganizerOfferFormValues) => Promise<void>;
+  onSubmit: (values: OrganizerOfferSubmitValues) => Promise<void>;
 };
 
 export function OrganizerOfferForm({
@@ -37,15 +42,20 @@ export function OrganizerOfferForm({
 
   const [formValues, setFormValues] =
     useState<OrganizerOfferFormValues>(defaultValues);
+  const [mainImageFile, setMainImageFile] = useState<File | undefined>(
+    undefined,
+  );
   const [formErrors, setFormErrors] = useState<OrganizerOfferFormErrors>({});
 
   useEffect(() => {
     if (initialValues) {
       setFormValues(initialValues);
+      setMainImageFile(undefined);
       return;
     }
 
     setFormValues(defaultValues);
+    setMainImageFile(undefined);
   }, [defaultValues, initialValues]);
 
   const isCategoryChecked = (categoryId: string): boolean =>
@@ -92,8 +102,46 @@ export function OrganizerOfferForm({
       return;
     }
 
+    if (mainImageFile && mainImageFile.size > MAX_MAIN_IMAGE_SIZE_BYTES) {
+      setFormErrors({
+        [MAIN_IMAGE_ERROR_KEY]: 'Zdjęcie główne nie może przekraczać 5 MB.',
+      });
+      return;
+    }
+
     setFormErrors({});
-    await onSubmit(formValues);
+    await onSubmit({ ...formValues, mainImageFile });
+  };
+
+  const handleMainImageChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const selectedFile = event.target.files?.[0];
+
+    if (!selectedFile) {
+      setMainImageFile(undefined);
+      setFormErrors((previousErrors) => ({
+        ...previousErrors,
+        [MAIN_IMAGE_ERROR_KEY]: undefined,
+      }));
+      return;
+    }
+
+    if (selectedFile.size > MAX_MAIN_IMAGE_SIZE_BYTES) {
+      setMainImageFile(undefined);
+      setFormErrors((previousErrors) => ({
+        ...previousErrors,
+        [MAIN_IMAGE_ERROR_KEY]: 'Zdjęcie główne nie może przekraczać 5 MB.',
+      }));
+      event.target.value = '';
+      return;
+    }
+
+    setMainImageFile(selectedFile);
+    setFormErrors((previousErrors) => ({
+      ...previousErrors,
+      [MAIN_IMAGE_ERROR_KEY]: undefined,
+    }));
   };
 
   const hasOfferType = offerTypes.some(
@@ -154,6 +202,29 @@ export function OrganizerOfferForm({
         {formErrors.description ? (
           <span className='text-xs text-destructive'>
             {formErrors.description}
+          </span>
+        ) : null}
+      </label>
+
+      <label className='flex flex-col gap-1 lg:col-span-2'>
+        <span className='text-sm font-medium'>Zdjęcie główne</span>
+        <input
+          type='file'
+          accept='image/*'
+          onChange={handleMainImageChange}
+          className='rounded-md border bg-background px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-muted file:px-3 file:py-2 file:text-sm'
+        />
+        <span className='text-xs text-muted-foreground'>
+          Maksymalny rozmiar pliku: 5 MB.
+        </span>
+        {mainImageFile ? (
+          <span className='text-xs text-muted-foreground'>
+            Wybrano plik: {mainImageFile.name}
+          </span>
+        ) : null}
+        {formErrors.mainImageFile ? (
+          <span className='text-xs text-destructive'>
+            {formErrors.mainImageFile}
           </span>
         ) : null}
       </label>

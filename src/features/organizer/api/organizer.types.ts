@@ -102,3 +102,7 @@ export type OrganizerOfferFormValues = {
   availableSpots: number;
   status: OfferStatus;
 };
+
+export type OrganizerOfferSubmitValues = OrganizerOfferFormValues & {
+  mainImageFile: File | undefined;
+};

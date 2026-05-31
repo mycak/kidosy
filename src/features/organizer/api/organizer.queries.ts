@@ -15,7 +15,7 @@ import {
 } from './organizer.api';
 import type {
   OrganizerLeadsQueryOptions,
-  OrganizerOfferFormValues,
+  OrganizerOfferSubmitValues,
   OrganizerOffersQueryOptions,
   OrganizerProfileData,
 } from './organizer.types';
@@ -155,7 +155,7 @@ export function useCreateOrganizerOfferMutation(userId: string | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (offerValues: OrganizerOfferFormValues) =>
+    mutationFn: async (offerValues: OrganizerOfferSubmitValues) =>
       createOrganizerOffer(userId ?? '', offerValues),
     onSuccess: () => {
       if (userId) {
@@ -177,7 +177,7 @@ export function useUpdateOrganizerOfferMutation(
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (offerValues: OrganizerOfferFormValues) =>
+    mutationFn: async (offerValues: OrganizerOfferSubmitValues) =>
       updateOrganizerOffer(userId ?? '', offerId, offerValues),
     onSuccess: () => {
       if (userId) {

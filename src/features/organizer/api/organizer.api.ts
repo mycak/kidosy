@@ -15,6 +15,7 @@ import type {
   OrganizerLeadsQueryOptions,
   OrganizerLeadListItem,
   OrganizerOfferFormValues,
+  OrganizerOfferSubmitValues,
   OrganizerOffersQueryOptions,
   OrganizerOfferListItem,
   OrganizerPaginatedResult,
@@ -30,6 +31,9 @@ const DEFAULT_AVAILABLE_SPOTS = 10;
 const MAX_AGE_RANGE_LIMIT = 18;
 const RECENT_OFFERS_LIMIT = 5;
 const DASHBOARD_SUMMARY_MAX_OFFERS = 500;
+const MAIN_IMAGE_MAX_SIZE_BYTES = 5 * 1024 * 1024;
+const STORAGE_IMAGES_BUCKET = 'images';
+const MAIN_IMAGE_DISPLAY_ORDER = 0;
 
 const DEFAULT_ORGANIZER_OFFERS_QUERY_OPTIONS: OrganizerOffersQueryOptions = {
   status: 'all',
@@ -64,6 +68,7 @@ const LEAD_STATUSES: readonly LeadStatus[] = [
 
 type OfferRow = Tables<'offers'>;
 type LeadRow = Tables<'leads'>;
+type OfferImageRow = Tables<'offer_images'>;
 
 type OfferTypeRelation =
   | {
@@ -634,6 +639,147 @@ function toOfferUpdatePayload(
   };
 }
 
+type MainOfferImageRecord = Pick<OfferImageRow, 'id' | 'storage_path'>;
+
+function normalizeFileExtension(fileName: string): string {
+  const extension = fileName.split('.').pop()?.toLowerCase() ?? 'jpg';
+  if (!extension || extension.length > 10) {
+    return 'jpg';
+  }
+
+  return extension;
+}
+
+function buildMainOfferImageObjectPath(offerId: string, fileName: string): string {
+  const timestamp = Date.now();
+  const extension = normalizeFileExtension(fileName);
+  return `offers/${offerId}/main-${timestamp}.${extension}`;
+}
+
+function toStoredImagePath(objectPath: string): string {
+  return `${STORAGE_IMAGES_BUCKET}/${objectPath}`;
+}
+
+function toBucketObjectPath(storagePath: string): string {
+  const storageBucketPrefix = `${STORAGE_IMAGES_BUCKET}/`;
+  if (storagePath.startsWith(storageBucketPrefix)) {
+    return storagePath.slice(storageBucketPrefix.length);
+  }
+
+  return storagePath;
+}
+
+async function fetchOfferMainImages(offerId: string): Promise<MainOfferImageRecord[]> {
+  const { data, error } = await supabaseClient
+    .from('offer_images')
+    .select('id, storage_path')
+    .eq('offer_id', offerId)
+    .eq('display_order', MAIN_IMAGE_DISPLAY_ORDER)
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    throw new Error('Nie udało się pobrać głównego zdjęcia oferty.');
+  }
+
+  return (data ?? []) as MainOfferImageRecord[];
+}
+
+async function upsertMainOfferImage(
+  offerId: string,
+  storagePath: string,
+): Promise<void> {
+  const existingMainImages = await fetchOfferMainImages(offerId);
+  const primaryMainImage = existingMainImages[0];
+  const obsoleteMainImages = existingMainImages.slice(1);
+
+  if (primaryMainImage) {
+    const { error: updateMainImageError } = await supabaseClient
+      .from('offer_images')
+      .update({ storage_path: storagePath })
+      .eq('id', primaryMainImage.id);
+
+    if (updateMainImageError) {
+      throw new Error('Nie udało się zaktualizować głównego zdjęcia oferty.');
+    }
+  } else {
+    const { error: insertMainImageError } = await supabaseClient
+      .from('offer_images')
+      .insert({
+        offer_id: offerId,
+        storage_path: storagePath,
+        display_order: MAIN_IMAGE_DISPLAY_ORDER,
+      });
+
+    if (insertMainImageError) {
+      throw new Error('Nie udało się zapisać głównego zdjęcia oferty.');
+    }
+  }
+
+  if (obsoleteMainImages.length > 0) {
+    const obsoleteMainImageIds = obsoleteMainImages.map((image) => image.id);
+    const { error: deleteObsoleteRowsError } = await supabaseClient
+      .from('offer_images')
+      .delete()
+      .in('id', obsoleteMainImageIds);
+
+    if (deleteObsoleteRowsError) {
+      throw new Error('Nie udało się odświeżyć danych głównego zdjęcia oferty.');
+    }
+  }
+}
+
+async function replaceMainOfferImage(
+  offerId: string,
+  mainImageFile: File | undefined,
+): Promise<void> {
+  if (!mainImageFile) {
+    return;
+  }
+
+  if (mainImageFile.size > MAIN_IMAGE_MAX_SIZE_BYTES) {
+    throw new Error('Zdjęcie główne nie może przekraczać 5 MB.');
+  }
+
+  const existingMainImages = await fetchOfferMainImages(offerId);
+  const existingPaths = existingMainImages.map((image) => image.storage_path);
+  const mainImageObjectPath = buildMainOfferImageObjectPath(
+    offerId,
+    mainImageFile.name,
+  );
+
+  const { error: uploadError } = await supabaseClient.storage
+    .from(STORAGE_IMAGES_BUCKET)
+    .upload(mainImageObjectPath, mainImageFile, {
+      upsert: false,
+      contentType: mainImageFile.type || undefined,
+    });
+
+  if (uploadError) {
+    throw new Error('Nie udało się wysłać głównego zdjęcia do magazynu.');
+  }
+
+  const nextStoragePath = toStoredImagePath(mainImageObjectPath);
+
+  try {
+    await upsertMainOfferImage(offerId, nextStoragePath);
+  } catch (error) {
+    await supabaseClient.storage
+      .from(STORAGE_IMAGES_BUCKET)
+      .remove([mainImageObjectPath]);
+    throw error;
+  }
+
+  const objectPathsToDelete = existingPaths
+    .map((existingPath) => toBucketObjectPath(existingPath))
+    .filter((existingPath) => existingPath !== mainImageObjectPath);
+
+  if (objectPathsToDelete.length > 0) {
+    await supabaseClient.storage
+      .from(STORAGE_IMAGES_BUCKET)
+      .remove(objectPathsToDelete);
+  }
+}
+
 async function replaceOfferCategories(
   offerId: string,
   categoryIds: string[],
@@ -669,9 +815,10 @@ async function replaceOfferCategories(
 
 export async function createOrganizerOffer(
   userId: string,
-  values: OrganizerOfferFormValues,
+  values: OrganizerOfferSubmitValues,
 ): Promise<string> {
-  const offerInsertPayload = toOfferInsertPayload(userId, values);
+  const { mainImageFile, ...offerFormValues } = values;
+  const offerInsertPayload = toOfferInsertPayload(userId, offerFormValues);
 
   const { data: offer, error: offerError } = await supabaseClient
     .from('offers')
@@ -683,7 +830,8 @@ export async function createOrganizerOffer(
     throw new Error('Nie udało się utworzyć oferty.');
   }
 
-  await replaceOfferCategories(offer.id, values.categoryIds);
+  await replaceOfferCategories(offer.id, offerFormValues.categoryIds);
+  await replaceMainOfferImage(offer.id, mainImageFile);
 
   return offer.id;
 }
@@ -691,9 +839,10 @@ export async function createOrganizerOffer(
 export async function updateOrganizerOffer(
   userId: string,
   offerId: string,
-  values: OrganizerOfferFormValues,
+  values: OrganizerOfferSubmitValues,
 ): Promise<void> {
-  const offerUpdatePayload = toOfferUpdatePayload(values);
+  const { mainImageFile, ...offerFormValues } = values;
+  const offerUpdatePayload = toOfferUpdatePayload(offerFormValues);
 
   const { error: offerError } = await supabaseClient
     .from('offers')
@@ -705,7 +854,8 @@ export async function updateOrganizerOffer(
     throw new Error('Nie udało się zaktualizować oferty.');
   }
 
-  await replaceOfferCategories(offerId, values.categoryIds);
+  await replaceOfferCategories(offerId, offerFormValues.categoryIds);
+  await replaceMainOfferImage(offerId, mainImageFile);
 }
 
 export function buildDefaultOfferFormValues(
