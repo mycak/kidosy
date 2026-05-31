@@ -3,6 +3,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { RouterProvider } from '@tanstack/react-router';
 import { SupabaseProvider } from '@/context/supabase.context';
 import { supabaseClient } from '@/db/supabase.client';
+import { AuthSessionProvider } from '@/features/auth/context/AuthSessionProvider';
 import { router } from './router';
 
 const queryClient = new QueryClient({
@@ -24,10 +25,12 @@ const queryClient = new QueryClient({
 export function App() {
   return (
     <SupabaseProvider client={supabaseClient}>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} context={{ queryClient }} />
-        {import.meta.env.DEV && <ReactQueryDevtools />}
-      </QueryClientProvider>
+      <AuthSessionProvider>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} context={{ queryClient }} />
+          {import.meta.env.DEV && <ReactQueryDevtools />}
+        </QueryClientProvider>
+      </AuthSessionProvider>
     </SupabaseProvider>
   );
 }

@@ -10,11 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OrganizerDashboardRouteImport } from './routes/organizer/dashboard'
 import { Route as OffersOfferIdRouteImport } from './routes/offers/$offerId'
+import { Route as AuthRegisterRouteImport } from './routes/auth/register'
+import { Route as AuthPasswordResetRouteImport } from './routes/auth/password-reset'
+import { Route as AuthLoginRouteImport } from './routes/auth/login'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrganizerDashboardRoute = OrganizerDashboardRouteImport.update({
+  id: '/organizer/dashboard',
+  path: '/organizer/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OffersOfferIdRoute = OffersOfferIdRouteImport.update({
@@ -22,31 +31,81 @@ const OffersOfferIdRoute = OffersOfferIdRouteImport.update({
   path: '/offers/$offerId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRegisterRoute = AuthRegisterRouteImport.update({
+  id: '/auth/register',
+  path: '/auth/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthPasswordResetRoute = AuthPasswordResetRouteImport.update({
+  id: '/auth/password-reset',
+  path: '/auth/password-reset',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/auth/login',
+  path: '/auth/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/password-reset': typeof AuthPasswordResetRoute
+  '/auth/register': typeof AuthRegisterRoute
   '/offers/$offerId': typeof OffersOfferIdRoute
+  '/organizer/dashboard': typeof OrganizerDashboardRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/password-reset': typeof AuthPasswordResetRoute
+  '/auth/register': typeof AuthRegisterRoute
   '/offers/$offerId': typeof OffersOfferIdRoute
+  '/organizer/dashboard': typeof OrganizerDashboardRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/password-reset': typeof AuthPasswordResetRoute
+  '/auth/register': typeof AuthRegisterRoute
   '/offers/$offerId': typeof OffersOfferIdRoute
+  '/organizer/dashboard': typeof OrganizerDashboardRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/offers/$offerId'
+  fullPaths:
+    | '/'
+    | '/auth/login'
+    | '/auth/password-reset'
+    | '/auth/register'
+    | '/offers/$offerId'
+    | '/organizer/dashboard'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/offers/$offerId'
-  id: '__root__' | '/' | '/offers/$offerId'
+  to:
+    | '/'
+    | '/auth/login'
+    | '/auth/password-reset'
+    | '/auth/register'
+    | '/offers/$offerId'
+    | '/organizer/dashboard'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth/login'
+    | '/auth/password-reset'
+    | '/auth/register'
+    | '/offers/$offerId'
+    | '/organizer/dashboard'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthPasswordResetRoute: typeof AuthPasswordResetRoute
+  AuthRegisterRoute: typeof AuthRegisterRoute
   OffersOfferIdRoute: typeof OffersOfferIdRoute
+  OrganizerDashboardRoute: typeof OrganizerDashboardRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,6 +117,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/organizer/dashboard': {
+      id: '/organizer/dashboard'
+      path: '/organizer/dashboard'
+      fullPath: '/organizer/dashboard'
+      preLoaderRoute: typeof OrganizerDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/offers/$offerId': {
       id: '/offers/$offerId'
       path: '/offers/$offerId'
@@ -65,12 +131,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OffersOfferIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/register': {
+      id: '/auth/register'
+      path: '/auth/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof AuthRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/password-reset': {
+      id: '/auth/password-reset'
+      path: '/auth/password-reset'
+      fullPath: '/auth/password-reset'
+      preLoaderRoute: typeof AuthPasswordResetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthLoginRoute: AuthLoginRoute,
+  AuthPasswordResetRoute: AuthPasswordResetRoute,
+  AuthRegisterRoute: AuthRegisterRoute,
   OffersOfferIdRoute: OffersOfferIdRoute,
+  OrganizerDashboardRoute: OrganizerDashboardRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

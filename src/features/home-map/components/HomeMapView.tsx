@@ -26,15 +26,6 @@ import type { HomeMapFilters, SortBy, SortOrder } from '../types';
 import type { HomeMapSearchParams } from '../schemas';
 import { DEFAULT_PER_PAGE } from '../types';
 
-const BRAND_LETTERS = [
-  { letter: 'K', className: 'text-sky-500' },
-  { letter: 'i', className: 'text-emerald-500' },
-  { letter: 'd', className: 'text-rose-400' },
-  { letter: 'o', className: 'text-amber-400' },
-  { letter: 's', className: 'text-violet-400' },
-  { letter: 'y', className: 'text-teal-500' },
-];
-
 export function HomeMapView() {
   const search = Route.useSearch() as unknown as HomeMapSearchParams;
   const navigate = useNavigate({ from: '/' });
@@ -150,22 +141,18 @@ export function HomeMapView() {
   }
 
   return (
-    <main className='flex h-dvh flex-col overflow-hidden bg-linear-to-br from-sky-50 via-emerald-50 to-rose-50'>
-      <header className='border-b border-white/50 bg-white/70 p-4 backdrop-blur'>
-        <div className='mb-3'>
+    <section className='flex min-h-0 flex-1 flex-col overflow-hidden bg-linear-to-br from-sky-50 via-emerald-50 to-rose-50'>
+      <div className='border-b border-white/50 bg-white/70 p-4 backdrop-blur'>
+        <div className='mx-auto mb-3 max-w-3xl text-center'>
           <h1 className='text-3xl font-bold tracking-tight sm:text-4xl'>
-            {BRAND_LETTERS.map((item, index) => (
-              <span key={`${item.letter}-${index}`} className={item.className}>
-                {item.letter}
-              </span>
-            ))}
+            Z myślą o dzieciach.
           </h1>
-          <p className='text-sm text-gray-600 sm:text-base mt-1'>
+          <p className='mt-2 text-sm text-gray-600 sm:text-base'>
             Odkryj zajęcia i aktywności dla Twoich dzieci. Wyszukaj idealne
             zajęcia wśród ofert w Twojej okolicy.
           </p>
         </div>
-      </header>
+      </div>
 
       <div className='h-1 bg-linear-to-r from-sky-200 via-emerald-200 to-rose-200' />
 
@@ -236,6 +223,6 @@ export function HomeMapView() {
           onPageChange={handlePageChange}
         />
       </div>
-    </main>
+    </section>
   );
 }
