@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabaseClient } from '@/db/supabase.client';
+import { sendLeadNotificationEmail } from '../api/lead-notifications.api';
 import type { CreateLeadRequest, CreateLeadResponse } from '../types';
 
 interface CreateLeadParams {
@@ -9,27 +10,6 @@ interface CreateLeadParams {
 
 export const useCreateLead = () => {
   const queryClient = useQueryClient();
-
-  const sendLeadNotification = async (leadIds: string[]) => {
-    if (leadIds.length === 0) {
-      return;
-    }
-
-    const { error } = await supabaseClient.functions.invoke(
-      'send-lead-notification',
-      {
-        body: {
-          leadIds,
-        },
-      },
-    );
-
-    if (error) {
-      throw new Error(
-        error.message || 'Nie udało się wysłać maila do organizatora',
-      );
-    }
-  };
 
   return useMutation({
     mutationFn: async ({
@@ -77,7 +57,7 @@ export const useCreateLead = () => {
       }
 
       try {
-        await sendLeadNotification(data.leadIds);
+        await sendLeadNotificationEmail(data.leadIds);
       } catch (error) {
         console.error('Nie udało się wysłać maila do organizatora:', error);
       }

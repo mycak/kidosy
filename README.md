@@ -70,6 +70,26 @@ npm run dev
 - `npm run build` - Build for production
 - `npm run lint` - Run ESLint
 - `npm run preview` - Preview production build
+- `npm run ops:seed -- --target=local|prod` - Seed organizer test data using selected env file
+- `npm run ops:seed:local` - Shortcut for local seed (`.env.local`)
+- `npm run ops:seed:prod` - Shortcut for production seed (`.env`)
+- `npm run ops:test-email` - Run email notification unit tests
+
+## Environment Switching for Ops
+
+To avoid manual env switching when seeding:
+
+- `--target=local` loads variables from `.env.local`
+- `--target=prod` loads variables from `.env`
+
+Examples:
+
+```bash
+npm run ops:seed -- --target=local
+npm run ops:seed -- --target=prod
+```
+
+If the target environment does not have required tables yet, the script exits with a clear message to apply migrations first.
 
 ## Project Structure
 

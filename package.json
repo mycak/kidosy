@@ -8,7 +8,11 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "migrate": "npx supabase migration up"
+    "migrate": "npx supabase migration up",
+    "ops:seed": "node scripts/ops/seed-organizer-data.mjs",
+    "ops:seed:local": "node scripts/ops/seed-organizer-data.mjs --target=local",
+    "ops:seed:prod": "node scripts/ops/seed-organizer-data.mjs --target=prod",
+    "ops:test-email": "npx vitest run src/features/offers/api/lead-notifications.api.test.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.1.0",
