@@ -94,7 +94,7 @@ export function FilterPanel({
   const shouldShowExpandedContent = isCollapsible ? isExpanded : true;
   const isDialogVariant = variant === 'dialog';
   const primaryFiltersGridClass = isDialogVariant
-    ? 'grid grid-cols-1 gap-4 lg:grid-cols-3'
+    ? 'grid grid-cols-1 gap-4 lg:grid-cols-2'
     : 'grid gap-4 sm:grid-cols-2 lg:grid-cols-3';
   const secondaryFiltersGridClass = isDialogVariant
     ? 'grid grid-cols-1 gap-6 lg:grid-cols-2'
@@ -206,7 +206,7 @@ export function FilterPanel({
     <div
       className={
         isDialogVariant
-          ? 'w-full'
+          ? 'mx-auto w-full max-w-3xl'
           : 'border-b border-white/50 bg-linear-to-r from-white/70 via-emerald-50/70 to-rose-50/70 backdrop-blur'
       }
     >
@@ -214,7 +214,7 @@ export function FilterPanel({
         {isDialogVariant ? (
           panelHeaderAndContent
         ) : (
-          <Card className='border-white/60 bg-white/80 shadow-sm'>
+          <Card className='rounded-[24px] border-white/60 bg-white/80 shadow-sm'>
             <CardContent className='px-4 py-0 lg:px-6 lg:py-0'>
               {panelHeaderAndContent}
             </CardContent>

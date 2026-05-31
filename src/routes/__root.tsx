@@ -9,9 +9,9 @@ interface RouterContext {
 
 export const Route = createRootRoute<RouterContext>({
   component: () => (
-    <div className='flex h-dvh max-h-dvh min-h-[800px] flex-col bg-background'>
+    <div className='relative flex h-dvh max-h-dvh min-h-200 flex-col overflow-hidden bg-transparent'>
       <AppHeader />
-      <main className='flex min-h-0 flex-1 flex-col'>
+      <main id='app-main-scroll' className='flex min-h-0 flex-1 flex-col overflow-y-auto'>
         <Outlet />
       </main>
       {import.meta.env.DEV && <TanStackRouterDevtools />}

@@ -11,8 +11,8 @@ export function MapLoadingSkeleton() {
         </div>
       </div>
       <div className='absolute left-4 top-4 space-y-2'>
-        <div className='h-10 w-10 rounded-md bg-muted-foreground/20' />
-        <div className='h-10 w-10 rounded-md bg-muted-foreground/20' />
+        <div className='h-10 w-10 rounded-xl bg-muted-foreground/20' />
+        <div className='h-10 w-10 rounded-xl bg-muted-foreground/20' />
       </div>
     </div>
   );

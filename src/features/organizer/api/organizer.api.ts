@@ -694,44 +694,30 @@ async function upsertMainOfferImage(
   storagePath: string,
 ): Promise<void> {
   const existingMainImages = await fetchOfferMainImages(offerId);
-  const primaryMainImage = existingMainImages[0];
-  const obsoleteMainImages = existingMainImages.slice(1);
-
-  if (primaryMainImage) {
-    const { error: updateMainImageError } = await supabaseClient
-      .from('offer_images')
-      .update({ storage_path: storagePath })
-      .eq('id', primaryMainImage.id);
-
-    if (updateMainImageError) {
-      throw new Error('Nie udało się zaktualizować głównego zdjęcia oferty.');
-    }
-  } else {
-    const { error: insertMainImageError } = await supabaseClient
-      .from('offer_images')
-      .insert({
-        offer_id: offerId,
-        storage_path: storagePath,
-        display_order: MAIN_IMAGE_DISPLAY_ORDER,
-      });
-
-    if (insertMainImageError) {
-      throw new Error('Nie udało się zapisać głównego zdjęcia oferty.');
-    }
-  }
-
-  if (obsoleteMainImages.length > 0) {
-    const obsoleteMainImageIds = obsoleteMainImages.map((image) => image.id);
-    const { error: deleteObsoleteRowsError } = await supabaseClient
+  if (existingMainImages.length > 0) {
+    const existingMainImageIds = existingMainImages.map((image) => image.id);
+    const { error: deleteMainImageRowsError } = await supabaseClient
       .from('offer_images')
       .delete()
-      .in('id', obsoleteMainImageIds);
+      .in('id', existingMainImageIds);
 
-    if (deleteObsoleteRowsError) {
+    if (deleteMainImageRowsError) {
       throw new Error(
         'Nie udało się odświeżyć danych głównego zdjęcia oferty.',
       );
     }
+  }
+
+  const { error: insertMainImageError } = await supabaseClient
+    .from('offer_images')
+    .insert({
+      offer_id: offerId,
+      storage_path: storagePath,
+      display_order: MAIN_IMAGE_DISPLAY_ORDER,
+    });
+
+  if (insertMainImageError) {
+    throw new Error('Nie udało się zapisać głównego zdjęcia oferty.');
   }
 }
 

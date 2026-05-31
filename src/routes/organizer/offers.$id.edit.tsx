@@ -1,5 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
+import { PencilLine, Sparkles } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { useAuthSession } from '@/features/auth/context/useAuthSession';
 import {
   useOrganizerCategoriesQuery,
@@ -104,11 +106,24 @@ function OrganizerOffersEditRoute() {
 
   return (
     <section className='flex flex-1 flex-col gap-4'>
-      <header className='flex flex-col gap-1'>
-        <h1 className='text-2xl font-semibold'>Edytuj ofertę</h1>
-        <p className='text-sm text-muted-foreground'>
-          Edycja oferty o identyfikatorze {id}.
-        </p>
+      <header className='ui-entrance ui-panel flex flex-col gap-3 rounded-[28px] p-5'>
+        <div className='flex flex-wrap items-center gap-2'>
+          <Badge variant='secondary' className='gap-1.5 rounded-full px-3 py-1'>
+            <Sparkles className='size-3' />
+            editor mode
+          </Badge>
+        </div>
+        <div className='flex items-center gap-3'>
+          <div className='flex size-10 items-center justify-center rounded-2xl bg-linear-to-br from-sky-500 via-emerald-500 to-rose-500 text-white shadow-lg shadow-sky-500/20'>
+            <PencilLine className='size-4' />
+          </div>
+          <div>
+            <h1 className='text-3xl font-semibold tracking-tight'>Edytuj ofertę</h1>
+            <p className='text-sm text-muted-foreground'>
+              Edycja oferty o identyfikatorze {id}.
+            </p>
+          </div>
+        </div>
       </header>
 
       <OrganizerOfferForm

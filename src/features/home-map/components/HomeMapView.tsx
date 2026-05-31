@@ -1,6 +1,15 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { SlidersHorizontal } from 'lucide-react';
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  MapPinned,
+  RefreshCcw,
+  Sparkles,
+  SlidersHorizontal,
+  TriangleAlert,
+} from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Route } from '@/routes/index';
 import { useHomeMapFilters } from '../hooks/useHomeMapFilters';
 import {
@@ -34,6 +43,7 @@ export function HomeMapView() {
   const [selectedOfferId, setSelectedOfferId] = useState<string | null>(null);
   const [hoveredOfferId, setHoveredOfferId] = useState<string | null>(null);
   const [isFiltersDialogOpen, setIsFiltersDialogOpen] = useState(false);
+  const [isInfoPanelCollapsed, setIsInfoPanelCollapsed] = useState(false);
 
   const { getCurrentLocation, isLoading: isLoadingLocation } = useGeolocation();
 
@@ -81,6 +91,12 @@ export function HomeMapView() {
     updateFilters(newFilters);
   };
 
+  const handleResetFilters = useCallback(() => {
+    setSelectedOfferId(null);
+    setHoveredOfferId(null);
+    resetFilters();
+  }, [resetFilters]);
+
   const handleSortChange = useCallback(
     (sortBy: SortBy, sortOrder: SortOrder) => {
       navigate({
@@ -117,22 +133,30 @@ export function HomeMapView() {
     }
   };
 
+  const collapseInfoPanel = useCallback(() => {
+    setIsInfoPanelCollapsed(true);
+  }, []);
+
   if (isError) {
     return (
       <div className='flex min-h-screen items-center justify-center p-8'>
-        <div className='text-center'>
-          <h2 className='mb-2 text-xl font-semibold'>
+        <div className='ui-panel ui-entrance w-full max-w-md rounded-[32px] p-6 text-center'>
+          <div className='mx-auto flex size-14 items-center justify-center rounded-2xl bg-destructive/10 text-destructive'>
+            <TriangleAlert className='size-6' />
+          </div>
+          <h2 className='mt-4 text-2xl font-semibold'>
             Ups! Coś poszło nie tak
           </h2>
-          <p className='mb-4 text-muted-foreground'>
+          <p className='mt-2 text-sm text-muted-foreground'>
             {error instanceof Error
               ? error.message
               : 'Wystąpił nieoczekiwany błąd'}
           </p>
           <button
             onClick={() => window.location.reload()}
-            className='rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90'
+            className='ui-entrance mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-sm hover:-translate-y-px hover:shadow-md'
           >
+            <RefreshCcw className='size-4' />
             Spróbuj ponownie
           </button>
         </div>
@@ -141,16 +165,56 @@ export function HomeMapView() {
   }
 
   return (
-    <section className='flex min-h-0 flex-1 flex-col overflow-hidden bg-linear-to-br from-sky-50 via-emerald-50 to-rose-50'>
-      <div className='border-b border-white/50 bg-white/70 p-4 backdrop-blur'>
-        <div className='mx-auto mb-3 max-w-3xl text-center'>
-          <h1 className='text-3xl font-bold tracking-tight sm:text-4xl'>
-            Z myślą o dzieciach.
-          </h1>
-          <p className='mt-2 text-sm text-gray-600 sm:text-base'>
-            Odkryj zajęcia i aktywności dla Twoich dzieci. Wyszukaj idealne
-            zajęcia wśród ofert w Twojej okolicy.
-          </p>
+    <section
+      className='flex min-h-0 flex-1 flex-col overflow-hidden bg-linear-to-br from-sky-50/50 via-emerald-50/50 to-rose-50/50'
+      onWheelCapture={collapseInfoPanel}
+      onScrollCapture={collapseInfoPanel}
+      onTouchMoveCapture={collapseInfoPanel}
+    >
+      <div
+        className={`overflow-hidden border-b border-white/70 bg-linear-to-r from-sky-100/70 via-white to-emerald-100/70 shadow-[0_10px_24px_-18px_rgb(15_23_42/0.35)] backdrop-blur-xl transition-all duration-300 ${
+          isInfoPanelCollapsed
+            ? 'max-h-0 border-transparent py-0 opacity-0'
+            : 'max-h-64 px-4 py-3 opacity-100'
+        }`}
+      >
+        <div className='mx-auto flex max-w-7xl flex-col gap-3 lg:flex-row lg:items-center lg:justify-between'>
+          <div className='flex max-w-3xl flex-col'>
+            <div className='flex items-center gap-2'>
+              <Badge variant='secondary' className='gap-1.5 rounded-full px-3 py-1'>
+                <Sparkles className='size-3' />
+                Wyszukiwarka zajęć
+              </Badge>
+
+              <Badge variant='outline' className='hidden gap-1.5 rounded-full px-3 py-1 md:inline-flex'>
+                <BriefcaseBusiness className='size-3' />
+                narzędzia dla organizatorów
+              </Badge>
+            </div>
+
+            <h1 className='mt-2 text-2xl font-semibold tracking-tight sm:text-3xl'>
+              Z myślą o dzieciach.
+            </h1>
+            <p className='mt-1 text-sm leading-6 text-muted-foreground sm:text-base'>
+              Odkryj zajęcia i aktywności dla Twoich dzieci. Wyszukaj idealne
+              zajęcia wśród ofert w Twojej okolicy.
+            </p>
+          </div>
+
+          <div className='flex flex-wrap items-center gap-2 text-xs text-muted-foreground lg:justify-end'>
+            <span className='inline-flex items-center gap-1.5 rounded-full border border-white/80 bg-white/85 px-3 py-1.5 shadow-sm'>
+              <MapPinned className='size-3.5 text-sky-500' />
+              mapa + lista
+            </span>
+            <span className='inline-flex items-center gap-1.5 rounded-full border border-white/80 bg-white/85 px-3 py-1.5 shadow-sm'>
+              <BriefcaseBusiness className='size-3.5 text-emerald-500' />
+              narzędzia dla organizatorów
+            </span>
+            <span className='inline-flex items-center gap-1.5 rounded-full border border-white/80 bg-white/85 px-3 py-1.5 shadow-sm'>
+              <ArrowRight className='size-3.5 text-rose-500' />
+              szybkie filtrowanie
+            </span>
+          </div>
         </div>
       </div>
 
@@ -172,7 +236,7 @@ export function HomeMapView() {
                 Filtry
               </Button>
             </DialogTrigger>
-            <DialogContent className='max-h-[90dvh] max-w-[calc(100vw-2rem)] overflow-y-auto p-5 sm:max-w-[calc(100vw-3rem)] sm:p-6 lg:max-w-300'>
+            <DialogContent className='max-h-[90dvh] max-w-[calc(100vw-2rem)] overflow-y-auto p-5 sm:max-w-[calc(100vw-3rem)] sm:p-6 lg:max-w-4xl'>
               <DialogHeader>
                 <DialogTitle>Filtry wyszukiwania</DialogTitle>
                 <DialogDescription className='sr-only'>
@@ -183,7 +247,7 @@ export function HomeMapView() {
               <FilterPanel
                 filters={filters}
                 onFiltersChange={handleFiltersChange}
-                onResetFilters={resetFilters}
+                onResetFilters={handleResetFilters}
                 onRemoveFilter={removeFilter}
                 categories={categoriesData || []}
                 offerTypes={offerTypesData || []}
@@ -197,7 +261,7 @@ export function HomeMapView() {
             </DialogContent>
           </Dialog>
 
-          <div className='h-full overflow-hidden rounded-2xl border border-white/70 bg-white/70 shadow-sm'>
+          <div className='h-full overflow-hidden rounded-[28px] border border-white/70 bg-white/70 shadow-sm'>
             <MapSection
               offers={data?.data || []}
               location={filters.location}
@@ -216,7 +280,7 @@ export function HomeMapView() {
           selectedOfferId={selectedOfferId}
           onOfferSelect={handleOfferSelect}
           onOfferHover={handleOfferHover}
-          onResetFilters={resetFilters}
+          onResetFilters={handleResetFilters}
           sortBy={search.sort_by}
           sortOrder={search.sort_order}
           onSortChange={handleSortChange}

@@ -195,6 +195,7 @@ export function GoogleMapContainer({
     }
 
     hasUserDraggedRef.current = false;
+    onOfferSelect(null);
 
     if (map && offers.length > 0) {
       const bounds = getBoundsForOffers(offers);
@@ -202,7 +203,7 @@ export function GoogleMapContainer({
         map.fitBounds(bounds);
       }
     }
-  }, [map, offers]);
+  }, [map, offers, onOfferSelect]);
 
   useEffect(() => {
     if (!map) {
@@ -306,7 +307,7 @@ export function GoogleMapContainer({
           className='gap-2 shadow-sm'
         >
           <X className='h-4 w-4' />
-          Wyczyść obszar
+          Wyczyść
         </Button>
       </div>
       <GoogleMap

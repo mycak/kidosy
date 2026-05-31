@@ -1,6 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  Filter,
+  MessagesSquare,
+  Sparkles,
+} from 'lucide-react';
 import { z } from 'zod';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { useAuthSession } from '@/features/auth/context/useAuthSession';
 import {
   useOrganizerLeadsQueryWithOptions,
@@ -170,16 +180,29 @@ function OrganizerLeadsRoute() {
 
   return (
     <section className='flex flex-1 flex-col gap-4'>
-      <header className='flex flex-col gap-1'>
-        <h1 className='text-2xl font-semibold'>Zgłoszenia</h1>
-        <p className='text-sm text-muted-foreground'>
-          Przeglądaj i aktualizuj status zgłoszeń rodziców.
-        </p>
+      <header className='ui-entrance ui-panel flex flex-col gap-3 rounded-[28px] p-5'>
+        <div className='flex flex-wrap items-center gap-2'>
+          <Badge variant='secondary' className='gap-1.5 rounded-full px-3 py-1'>
+            <Sparkles className='size-3' />
+            lead center
+          </Badge>
+          <Badge variant='outline' className='gap-1.5 rounded-full px-3 py-1'>
+            <MessagesSquare className='size-3' />
+            szybka obsługa
+          </Badge>
+        </div>
+        <div>
+          <h1 className='text-3xl font-semibold tracking-tight'>Zgłoszenia</h1>
+          <p className='mt-1 text-sm text-muted-foreground'>
+            Przeglądaj i aktualizuj status zgłoszeń rodziców.
+          </p>
+        </div>
       </header>
 
-      <div className='flex flex-wrap gap-3'>
+      <div className='ui-panel flex flex-wrap gap-3 rounded-[24px] p-4'>
         <label className='flex w-full max-w-xs flex-col gap-1'>
-          <span className='text-xs font-medium uppercase text-muted-foreground'>
+          <span className='inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground'>
+            <Filter className='size-3.5' />
             Filtr statusu
           </span>
           <select
@@ -202,7 +225,7 @@ function OrganizerLeadsRoute() {
         </label>
 
         <label className='flex w-full max-w-xs flex-col gap-1'>
-          <span className='text-xs font-medium uppercase text-muted-foreground'>
+          <span className='text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground'>
             Sortowanie
           </span>
           <select
@@ -225,7 +248,7 @@ function OrganizerLeadsRoute() {
         </label>
 
         <label className='flex w-full max-w-40 flex-col gap-1'>
-          <span className='text-xs font-medium uppercase text-muted-foreground'>
+          <span className='text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground'>
             Kierunek
           </span>
           <select
@@ -246,11 +269,17 @@ function OrganizerLeadsRoute() {
       </div>
 
       {leads.length === 0 ? (
-        <p className='rounded-md border border-dashed p-4 text-sm text-muted-foreground'>
-          Brak zgłoszeń dla wybranego filtra.
-        </p>
+        <div className='ui-panel rounded-[24px] border-dashed p-5 text-sm text-muted-foreground'>
+          <p className='font-medium text-foreground'>
+            Brak zgłoszeń dla wybranego filtra.
+          </p>
+          <p className='mt-2 max-w-2xl leading-6'>
+            Zmień filtr statusu albo poczekaj na nowe zgłoszenia — tutaj szybko
+            zobaczysz, co wymaga reakcji.
+          </p>
+        </div>
       ) : (
-        <div className='overflow-x-auto rounded-md border'>
+        <div className='overflow-x-auto rounded-[24px] border border-white/70 bg-white/70 shadow-sm backdrop-blur-xl'>
           <table className='min-w-full divide-y text-sm'>
             <thead>
               <tr className='bg-muted/50 text-left'>
@@ -267,7 +296,7 @@ function OrganizerLeadsRoute() {
                   draftStatusesByLeadId[leadItem.id] ?? leadItem.status;
 
                 return (
-                  <tr key={leadItem.id} className='border-t'>
+                  <tr key={leadItem.id} className='border-t transition-colors hover:bg-white/70'>
                     <td className='px-3 py-2'>
                       <p className='font-medium'>{leadItem.childName}</p>
                       <p className='text-xs text-muted-foreground'>
@@ -307,8 +336,10 @@ function OrganizerLeadsRoute() {
                       </select>
                     </td>
                     <td className='px-3 py-2'>
-                      <button
+                      <Button
                         type='button'
+                        variant='outline'
+                        size='sm'
                         disabled={
                           updateLeadStatusMutation.isPending ||
                           draftStatus === leadItem.status
@@ -319,10 +350,10 @@ function OrganizerLeadsRoute() {
                             leadItem.status,
                           )
                         }
-                        className='rounded-md border px-2 py-1 text-xs disabled:opacity-50'
                       >
+                        <CheckCircle2 className='size-3.5' />
                         Zapisz
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                 );
@@ -333,15 +364,17 @@ function OrganizerLeadsRoute() {
       )}
 
       {pagination ? (
-        <div className='flex items-center justify-between gap-3'>
+        <div className='flex items-center justify-between gap-3 rounded-[24px] border border-white/70 bg-white/70 p-4 shadow-sm backdrop-blur-xl'>
           <p className='text-xs text-muted-foreground'>
             Strona {pagination.page} z {Math.max(1, pagination.totalPages)} (
             {pagination.total} wyników)
           </p>
 
           <div className='flex gap-2'>
-            <button
+            <Button
               type='button'
+              variant='outline'
+              size='sm'
               onClick={() =>
                 updateSearch((currentSearch) => ({
                   ...currentSearch,
@@ -349,12 +382,14 @@ function OrganizerLeadsRoute() {
                 }))
               }
               disabled={page <= 1}
-              className='rounded-md border px-2 py-1 text-xs disabled:opacity-50'
             >
+              <ArrowLeft className='size-3.5' />
               Poprzednia
-            </button>
-            <button
+            </Button>
+            <Button
               type='button'
+              variant='outline'
+              size='sm'
               onClick={() =>
                 updateSearch((currentSearch) => ({
                   ...currentSearch,
@@ -362,10 +397,10 @@ function OrganizerLeadsRoute() {
                 }))
               }
               disabled={page >= (pagination.totalPages || 1)}
-              className='rounded-md border px-2 py-1 text-xs disabled:opacity-50'
             >
               Następna
-            </button>
+              <ArrowRight className='size-3.5' />
+            </Button>
           </div>
         </div>
       ) : null}

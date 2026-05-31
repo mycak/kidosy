@@ -12,7 +12,7 @@ export function OfferQuickPreview({ offer, onClose }: OfferQuickPreviewProps) {
   const maxAge = Math.max(...offer.ages);
 
   return (
-    <div className='absolute bottom-6 left-1/2 z-10 w-[90%] max-w-sm -translate-x-1/2 rounded-lg border border-white/70 bg-gradient-to-br from-white/90 via-emerald-50/80 to-rose-50/80 shadow-lg backdrop-blur'>
+    <div className='absolute bottom-6 left-1/2 z-10 w-[90%] max-w-sm -translate-x-1/2 rounded-[24px] border border-white/70 bg-gradient-to-br from-white/90 via-emerald-50/80 to-rose-50/80 shadow-lg backdrop-blur'>
       <div className='relative p-4'>
         <button
           onClick={onClose}

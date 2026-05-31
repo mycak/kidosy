@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { LogOut, LayoutDashboard } from 'lucide-react';
+import { Baby, ChevronDown, LayoutDashboard, LogOut, Sparkles, UserRound } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -61,31 +62,45 @@ export function AppHeader() {
   };
 
   return (
-    <header className='sticky top-0 z-40 border-b border-white/50 bg-white/85 px-4 py-3 backdrop-blur'>
+    <header className='sticky top-0 z-40 border-b border-white/70 bg-white/92 px-4 py-3 shadow-[0_12px_28px_-24px_rgb(15_23_42/0.55)] backdrop-blur-xl'>
       <div className='mx-auto flex w-full max-w-7xl items-center justify-between gap-3'>
         <Link
           to={PATHS.HOME}
           search={HOME_SEARCH_DEFAULTS}
-          className='inline-flex items-center gap-2'
+          className='group inline-flex items-center gap-3'
         >
-          <span className='text-2xl font-bold tracking-tight sm:text-3xl'>
-            {BRAND_LETTERS.map((item, index) => (
-              <span key={`${item.letter}-${index}`} className={item.className}>
-                {item.letter}
-              </span>
-            ))}
+          <span className='flex size-10 items-center justify-center rounded-2xl bg-linear-to-br from-sky-500 via-emerald-500 to-rose-500 text-white shadow-lg shadow-sky-500/20 transition-transform duration-300 group-hover:scale-105'>
+            <Baby className='size-4' />
+          </span>
+
+          <span className='flex flex-col'>
+            <span className='text-2xl font-bold tracking-tight sm:text-3xl'>
+              {BRAND_LETTERS.map((item, index) => (
+                <span key={`${item.letter}-${index}`} className={item.className}>
+                  {item.letter}
+                </span>
+              ))}
+            </span>
+            <span className='-mt-0.5 text-[0.65rem] font-medium uppercase tracking-[0.24em] text-muted-foreground'>
+              marketplace dla zajęć
+            </span>
           </span>
         </Link>
 
         {user ? (
           <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <DropdownMenuTrigger asChild>
-              <Button type='button' variant='outline' size='sm'>
-                {buildUserDisplayName(user.email)}
+              <Button type='button' variant='outline' size='sm' className='gap-2 rounded-full border-white/60 bg-white/80 px-3 shadow-sm'>
+                <UserRound className='size-3.5' />
+                <span className='max-w-32 truncate'>{buildUserDisplayName(user.email)}</span>
+                <ChevronDown className='size-3.5 opacity-70' />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
-              <DropdownMenuLabel>Konto organizatora</DropdownMenuLabel>
+            <DropdownMenuContent align='end' className='w-56'>
+              <DropdownMenuLabel className='flex items-center justify-between gap-2'>
+                <span>Konto organizatora</span>
+                <Badge variant='secondary'>online</Badge>
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onSelect={() => {
@@ -109,7 +124,12 @@ export function AppHeader() {
           </DropdownMenu>
         ) : (
           <Link to={PATHS.AUTH.LOGIN}>
-            <Button type='button' variant='secondary'>
+            <Button
+              type='button'
+              variant='secondary'
+              className='h-10 gap-2 rounded-full px-5 text-sm font-semibold shadow-sm hover:cursor-pointer'
+            >
+              <Sparkles className='size-3.5' />
               Dla organizatorów
             </Button>
           </Link>

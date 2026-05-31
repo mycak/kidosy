@@ -24,7 +24,7 @@ export function OfferCard({
 
   return (
     <Card
-      className={`cursor-pointer border-sky-100/80 bg-gradient-to-br from-white/80 via-sky-50/70 to-rose-50/70 transition-shadow hover:shadow-md ${
+      className={`cursor-pointer rounded-[24px] border-sky-100/80 bg-linear-to-br from-white/80 via-sky-50/70 to-rose-50/70 transition-shadow hover:shadow-md ${
         isSelected ? 'ring-2 ring-primary' : ''
       }`}
       onClick={() => onSelect(offer.id)}
@@ -91,12 +91,12 @@ export function OfferCard({
             }}
             className='block w-full'
           >
-            <Button className='w-full gap-2' size='sm'>
+            <Button className='h-10 w-full gap-2 text-sm'>
               Szczegóły
               <ArrowRight className='h-4 w-4' />
             </Button>
           </a>
-        </div>{' '}
+        </div>
       </CardContent>
     </Card>
   );

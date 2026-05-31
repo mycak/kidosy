@@ -2,7 +2,17 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Link } from '@tanstack/react-router';
 import { Outlet, useRouterState } from '@tanstack/react-router';
 import { useMemo } from 'react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  Filter,
+  PlusCircle,
+  Sparkles,
+} from 'lucide-react';
 import { z } from 'zod';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { useAuthSession } from '@/features/auth/context/useAuthSession';
 import { useOrganizerOffersQueryWithOptions } from '@/features/organizer/api/organizer.queries';
 import {
@@ -136,48 +146,62 @@ function OrganizerOffersListRoute() {
 
   return (
     <section className='flex flex-1 flex-col gap-4'>
-      <header className='flex flex-wrap items-center justify-between gap-3'>
+      <header className='ui-entrance ui-panel flex flex-wrap items-center justify-between gap-3 rounded-[28px] p-5'>
         <div>
-          <h1 className='text-2xl font-semibold'>Moje oferty</h1>
-          <p className='text-sm text-muted-foreground'>
+          <div className='flex flex-wrap items-center gap-2'>
+            <Badge variant='secondary' className='gap-1.5 rounded-full px-3 py-1'>
+              <Sparkles className='size-3' />
+              oferta hub
+            </Badge>
+            <Badge variant='outline' className='gap-1.5 rounded-full px-3 py-1'>
+              <CheckCircle2 className='size-3' />
+              szybkie zarządzanie
+            </Badge>
+          </div>
+          <h1 className='mt-3 text-3xl font-semibold tracking-tight'>
+            Moje oferty
+          </h1>
+          <p className='mt-1 text-sm text-muted-foreground'>
             Zarządzaj wszystkimi ofertami i monitoruj liczbę zgłoszeń.
           </p>
         </div>
         <Link
           to='/organizer/offers/new'
           search={currentOffersSearch}
-          className='rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground'
+          className='inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-transform hover:-translate-y-px'
         >
+          <PlusCircle className='size-4' />
           Dodaj ofertę
         </Link>
       </header>
 
-      <label className='flex w-full max-w-xs flex-col gap-1'>
-        <span className='text-xs font-medium uppercase text-muted-foreground'>
-          Filtr statusu
-        </span>
-        <select
-          value={selectedStatus}
-          onChange={(event) => {
-            updateSearch((currentSearch) => ({
-              ...currentSearch,
-              status: event.target.value as OfferStatus | 'all',
-              page: 1,
-            }));
-          }}
-          className='h-9 rounded-md border bg-background px-3 text-sm'
-        >
-          {OFFER_STATUS_FILTERS.map((offerStatusFilter) => (
-            <option key={offerStatusFilter} value={offerStatusFilter}>
-              {OFFER_STATUS_FILTER_LABELS[offerStatusFilter]}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <div className='flex flex-wrap gap-3'>
+      <div className='ui-panel flex flex-wrap gap-3 rounded-[24px] p-4'>
         <label className='flex w-full max-w-xs flex-col gap-1'>
-          <span className='text-xs font-medium uppercase text-muted-foreground'>
+          <span className='inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground'>
+            <Filter className='size-3.5' />
+            Filtr statusu
+          </span>
+          <select
+            value={selectedStatus}
+            onChange={(event) => {
+              updateSearch((currentSearch) => ({
+                ...currentSearch,
+                status: event.target.value as OfferStatus | 'all',
+                page: 1,
+              }));
+            }}
+            className='h-9 rounded-md border bg-background px-3 text-sm'
+          >
+            {OFFER_STATUS_FILTERS.map((offerStatusFilter) => (
+              <option key={offerStatusFilter} value={offerStatusFilter}>
+                {OFFER_STATUS_FILTER_LABELS[offerStatusFilter]}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className='flex w-full max-w-xs flex-col gap-1'>
+          <span className='text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground'>
             Sortowanie
           </span>
           <select
@@ -200,7 +224,7 @@ function OrganizerOffersListRoute() {
         </label>
 
         <label className='flex w-full max-w-40 flex-col gap-1'>
-          <span className='text-xs font-medium uppercase text-muted-foreground'>
+          <span className='text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground'>
             Kierunek
           </span>
           <select
@@ -221,11 +245,17 @@ function OrganizerOffersListRoute() {
       </div>
 
       {offers.length === 0 ? (
-        <p className='rounded-md border border-dashed p-4 text-sm text-muted-foreground'>
-          Brak ofert dla wybranego filtra.
-        </p>
+        <div className='ui-panel rounded-[24px] border-dashed p-5 text-sm text-muted-foreground'>
+          <p className='font-medium text-foreground'>
+            Brak ofert dla wybranego filtra.
+          </p>
+          <p className='mt-2 max-w-2xl leading-6'>
+            Spróbuj zmienić status lub dodaj nową ofertę, jeśli chcesz zacząć
+            od świeżego wpisu.
+          </p>
+        </div>
       ) : (
-        <div className='overflow-x-auto rounded-md border'>
+        <div className='overflow-x-auto rounded-[24px] border border-white/70 bg-white/70 shadow-sm backdrop-blur-xl'>
           <table className='min-w-full divide-y text-sm'>
             <thead>
               <tr className='bg-muted/50 text-left'>
@@ -239,7 +269,7 @@ function OrganizerOffersListRoute() {
             </thead>
             <tbody>
               {offers.map((offerItem) => (
-                <tr key={offerItem.id} className='border-t'>
+                <tr key={offerItem.id} className='border-t transition-colors hover:bg-white/70'>
                   <td className='px-3 py-2'>
                     <p className='font-medium'>{offerItem.title}</p>
                     <p className='text-xs text-muted-foreground'>
@@ -248,9 +278,9 @@ function OrganizerOffersListRoute() {
                   </td>
                   <td className='px-3 py-2'>{offerItem.offerTypeName}</td>
                   <td className='px-3 py-2'>
-                    <span className='rounded bg-muted px-2 py-1 text-xs'>
+                    <Badge variant='outline' className='rounded-full px-2 py-0.5'>
                       {getOfferStatusLabel(offerItem.status)}
-                    </span>
+                    </Badge>
                   </td>
                   <td className='px-3 py-2'>{offerItem.availableSpots}</td>
                   <td className='px-3 py-2'>{offerItem.leadsCount}</td>
@@ -259,9 +289,10 @@ function OrganizerOffersListRoute() {
                       to='/organizer/offers/$id/edit'
                       params={{ id: offerItem.id }}
                       search={currentOffersSearch}
-                      className='text-primary underline-offset-2 hover:underline'
+                      className='inline-flex items-center gap-1 font-medium text-primary underline-offset-4 hover:underline'
                     >
                       Edytuj
+                      <ArrowRight className='size-3.5' />
                     </Link>
                   </td>
                 </tr>
@@ -272,15 +303,17 @@ function OrganizerOffersListRoute() {
       )}
 
       {pagination ? (
-        <div className='flex items-center justify-between gap-3'>
+        <div className='flex items-center justify-between gap-3 rounded-[24px] border border-white/70 bg-white/70 p-4 shadow-sm backdrop-blur-xl'>
           <p className='text-xs text-muted-foreground'>
             Strona {pagination.page} z {Math.max(1, pagination.totalPages)} (
             {pagination.total} wyników)
           </p>
 
           <div className='flex gap-2'>
-            <button
+            <Button
               type='button'
+              variant='outline'
+              size='sm'
               onClick={() =>
                 updateSearch((currentSearch) => ({
                   ...currentSearch,
@@ -288,12 +321,14 @@ function OrganizerOffersListRoute() {
                 }))
               }
               disabled={!canGoToPreviousPage}
-              className='rounded-md border px-2 py-1 text-xs disabled:opacity-50'
             >
+              <ArrowLeft className='size-3.5' />
               Poprzednia
-            </button>
-            <button
+            </Button>
+            <Button
               type='button'
+              variant='outline'
+              size='sm'
               onClick={() =>
                 updateSearch((currentSearch) => ({
                   ...currentSearch,
@@ -301,10 +336,10 @@ function OrganizerOffersListRoute() {
                 }))
               }
               disabled={!canGoToNextPage}
-              className='rounded-md border px-2 py-1 text-xs disabled:opacity-50'
             >
               Następna
-            </button>
+              <ArrowRight className='size-3.5' />
+            </Button>
           </div>
         </div>
       ) : null}

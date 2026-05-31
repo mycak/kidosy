@@ -6,15 +6,32 @@ import { supabaseClient } from '@/db/supabase.client';
 import { AuthSessionProvider } from '@/features/auth/context/AuthSessionProvider';
 import { router } from './router';
 
+type QueryErrorWithStatus = {
+  status?: unknown;
+};
+
+function getQueryErrorStatus(error: unknown): number | undefined {
+  if (!error || typeof error !== 'object') {
+    return undefined;
+  }
+
+  const status = (error as QueryErrorWithStatus).status;
+
+  return typeof status === 'number' ? status : undefined;
+}
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000,
       gcTime: 10 * 60 * 1000,
-      retry: (failureCount, error: any) => {
-        if (error?.status >= 400 && error?.status < 500) {
+      retry: (failureCount, error: unknown) => {
+        const status = getQueryErrorStatus(error);
+
+        if (status !== undefined && status >= 400 && status < 500) {
           return false;
         }
+
         return failureCount < 2;
       },
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),

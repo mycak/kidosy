@@ -6,7 +6,7 @@ export function OffersListSkeleton() {
       {Array.from({ length: SKELETON_ITEMS }).map((_, index) => (
         <div
           key={`offer-skeleton-${index}`}
-          className='animate-pulse rounded-lg border p-4'
+          className='animate-pulse rounded-[24px] border p-4'
         >
           <div className='mb-3 h-4 w-2/3 rounded bg-muted' />
           <div className='mb-4 h-3 w-full rounded bg-muted' />

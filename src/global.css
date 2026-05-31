@@ -120,21 +120,77 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply font-sans bg-background text-foreground;
+
+  html {
+    scroll-behavior: smooth;
   }
+
+  body {
+    @apply font-sans bg-background text-foreground antialiased;
+    min-height: 100vh;
+    position: relative;
+    background-image:
+      radial-gradient(circle at top left, oklch(0.9 0.08 195 / 0.5), transparent 30%),
+      radial-gradient(circle at 80% 20%, oklch(0.88 0.09 330 / 0.22), transparent 28%),
+      linear-gradient(180deg, oklch(0.995 0.01 220), oklch(0.985 0.01 250));
+    background-attachment: fixed;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgb(255 255 255 / 0.4), transparent 28%),
+      radial-gradient(circle at 80% 0%, rgb(255 255 255 / 0.22), transparent 18%),
+      linear-gradient(120deg, rgb(255 255 255 / 0.08), transparent 45%, rgb(255 255 255 / 0.08)),
+      repeating-linear-gradient(
+        0deg,
+        rgb(255 255 255 / 0.035) 0,
+        rgb(255 255 255 / 0.035) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+    opacity: 0.75;
+    mix-blend-mode: soft-light;
+  }
+
+  #root {
+    position: relative;
+    isolation: isolate;
+    min-height: 100vh;
+    z-index: 1;
+  }
+
+  ::selection {
+    background: oklch(0.78 0.08 170 / 0.28);
+    color: oklch(0.2 0.02 250);
+  }
+
   html {
     @apply font-sans;
   }
 }
 
 @layer base {
-  [data-slot='button'] {
+  a,
+  button,
+  input,
+  select,
+  textarea {
     transition:
-      background-color 160ms ease,
-      color 160ms ease,
-      box-shadow 160ms ease,
-      transform 120ms ease;
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      border-color 180ms ease,
+      background-color 180ms ease,
+      color 180ms ease,
+      opacity 180ms ease;
+  }
+
+  [data-slot='button'] {
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.45) inset;
   }
 
   [data-slot='button'][data-variant='default'] {
@@ -147,8 +203,10 @@
   }
 
   [data-slot='button'][data-variant='default']:hover {
-    box-shadow: 0 8px 20px oklch(0.85 0.08 190 / 0.25);
-    transform: translateY(-1px);
+    box-shadow:
+      0 12px 28px oklch(0.78 0.08 185 / 0.22),
+      0 1px 0 rgb(255 255 255 / 0.45) inset;
+    transform: translateY(-1px) scale(1.01);
   }
 
   [data-slot='button'][data-variant='secondary'] {
@@ -161,8 +219,8 @@
   }
 
   [data-slot='button'][data-variant='secondary']:hover {
-    box-shadow: 0 8px 18px oklch(0.9 0.05 300 / 0.2);
-    transform: translateY(-1px);
+    box-shadow: 0 12px 24px oklch(0.9 0.05 300 / 0.18);
+    transform: translateY(-1px) scale(1.01);
   }
 
   [data-slot='button'][data-variant='outline'] {
@@ -175,7 +233,8 @@
   }
 
   [data-slot='button'][data-variant='outline']:hover {
-    box-shadow: 0 6px 16px oklch(0.9 0.03 240 / 0.18);
+    box-shadow: 0 10px 22px oklch(0.9 0.03 240 / 0.14);
+    transform: translateY(-1px);
   }
 
   [data-slot='button'][data-variant='ghost']:hover {
@@ -194,5 +253,81 @@
     );
     border-color: oklch(0.92 0.02 240);
     box-shadow: 0 18px 40px oklch(0.7 0.05 240 / 0.15);
+    backdrop-filter: blur(18px);
+  }
+
+  [data-slot='card'] {
+    background-image: linear-gradient(180deg, rgb(255 255 255 / 0.92), rgb(255 255 255 / 0.76));
+    backdrop-filter: blur(16px);
+  }
+
+  [data-slot='card']:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 24px 56px -24px oklch(0.66 0.06 250 / 0.35);
+  }
+
+  [data-slot='separator'] {
+    opacity: 0.8;
+  }
+
+  [data-slot='dropdown-menu-content'] {
+    backdrop-filter: blur(18px);
+  }
+}
+
+@layer utilities {
+  .ui-entrance {
+    animation: ui-entrance 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .ui-float {
+    animation: ui-float 8s ease-in-out infinite;
+  }
+
+  .ui-panel {
+    border: 1px solid rgb(255 255 255 / 0.72);
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.82), rgb(255 255 255 / 0.65));
+    backdrop-filter: blur(20px);
+    box-shadow: 0 24px 64px -32px rgb(15 23 42 / 0.4);
+  }
+
+  .ui-panel-borderless {
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.86), rgb(255 255 255 / 0.72));
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 50px -28px rgb(15 23 42 / 0.35);
+  }
+}
+
+@keyframes ui-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ui-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
