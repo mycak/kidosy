@@ -13,7 +13,9 @@ export function OfferDetails({ offer }: OfferDetailsProps) {
 
   return (
     <section className='ui-panel space-y-5 rounded-[24px] p-6'>
-      <h2 className='text-2xl font-semibold tracking-tight'>Szczegóły oferty</h2>
+      <h2 className='text-2xl font-semibold tracking-tight'>
+        Szczegóły oferty
+      </h2>
 
       <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
         <DetailItem

@@ -40,9 +40,8 @@ export function AuthPageShell({
             </h2>
             <p className='mt-4 max-w-lg text-sm leading-6 text-muted-foreground'>
               Twórz atrakcyjne oferty, obsługuj zgłoszenia bez chaosu i buduj
-              widoczność swojej marki tam, gdzie rodzice naprawdę szukają
-              zajęć. Kidosy skraca drogę od pierwszego kliknięcia do pełnej
-              grupy.
+              widoczność swojej marki tam, gdzie rodzice naprawdę szukają zajęć.
+              Kidosy skraca drogę od pierwszego kliknięcia do pełnej grupy.
             </p>
 
             <div className='mt-6 grid gap-3 text-sm text-foreground'>
@@ -61,8 +60,8 @@ export function AuthPageShell({
             </div>
 
             <p className='mt-6 max-w-md text-xs leading-5 text-muted-foreground'>
-              Mniej operacyjnej pracy, więcej czasu na rozwój oferty i kontakt
-              z rodzicami.
+              Mniej operacyjnej pracy, więcej czasu na rozwój oferty i kontakt z
+              rodzicami.
             </p>
           </div>
         </div>

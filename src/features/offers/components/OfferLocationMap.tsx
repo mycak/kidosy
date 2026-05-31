@@ -39,7 +39,9 @@ export function OfferLocationMap({ location, address }: OfferLocationMapProps) {
 
   return (
     <section className='ui-panel rounded-[24px] p-6'>
-      <h2 className='mb-4 text-2xl font-semibold tracking-tight'>Lokalizacja</h2>
+      <h2 className='mb-4 text-2xl font-semibold tracking-tight'>
+        Lokalizacja
+      </h2>
 
       <div className='space-y-4'>
         <div className='flex items-start gap-2'>
