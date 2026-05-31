@@ -358,7 +358,9 @@ async function seedOrganizerData() {
   const offersPayload = [
     {
       user_id: targetUserId,
-      ...(shouldIncludeOrganizerId ? { organizer_id: organizerProfile.id } : {}),
+      ...(shouldIncludeOrganizerId
+        ? { organizer_id: organizerProfile.id }
+        : {}),
       offer_type_id: defaultOfferTypeId,
       title: 'TEST MYCAK Oferta Opublikowana',
       description: 'Oferta testowa opublikowana dla dashboardu organizatora.',
@@ -372,7 +374,9 @@ async function seedOrganizerData() {
     },
     {
       user_id: targetUserId,
-      ...(shouldIncludeOrganizerId ? { organizer_id: organizerProfile.id } : {}),
+      ...(shouldIncludeOrganizerId
+        ? { organizer_id: organizerProfile.id }
+        : {}),
       offer_type_id: defaultOfferTypeId,
       title: 'TEST MYCAK Oferta Oczekująca na Moderację',
       description: 'Oferta testowa oczekująca na moderację.',
@@ -386,7 +390,9 @@ async function seedOrganizerData() {
     },
     {
       user_id: targetUserId,
-      ...(shouldIncludeOrganizerId ? { organizer_id: organizerProfile.id } : {}),
+      ...(shouldIncludeOrganizerId
+        ? { organizer_id: organizerProfile.id }
+        : {}),
       offer_type_id: defaultOfferTypeId,
       title: 'TEST MYCAK Oferta Szkic',
       description: 'Oferta testowa w statusie szkic.',
@@ -400,7 +406,9 @@ async function seedOrganizerData() {
     },
     {
       user_id: targetUserId,
-      ...(shouldIncludeOrganizerId ? { organizer_id: organizerProfile.id } : {}),
+      ...(shouldIncludeOrganizerId
+        ? { organizer_id: organizerProfile.id }
+        : {}),
       offer_type_id: defaultOfferTypeId,
       title: 'TEST MYCAK Oferta Odrzucona',
       description: 'Oferta testowa odrzucona przez moderację.',
@@ -411,11 +419,14 @@ async function seedOrganizerData() {
       end_date: buildDateFromOffset(58),
       available_spots: 10,
       status: 'rejected',
-      rejection_reason: 'Przykładowy powód odrzucenia do testów widoku organizera.',
+      rejection_reason:
+        'Przykładowy powód odrzucenia do testów widoku organizera.',
     },
     {
       user_id: targetUserId,
-      ...(shouldIncludeOrganizerId ? { organizer_id: organizerProfile.id } : {}),
+      ...(shouldIncludeOrganizerId
+        ? { organizer_id: organizerProfile.id }
+        : {}),
       offer_type_id: defaultOfferTypeId,
       title: 'TEST MYCAK Oferta Archiwalna',
       description: 'Oferta testowa archiwalna.',
@@ -429,10 +440,11 @@ async function seedOrganizerData() {
     },
   ];
 
-  const { data: insertedOffers, error: offersInsertError } = await supabaseClient
-    .from('offers')
-    .insert(offersPayload)
-    .select('id, title, status');
+  const { data: insertedOffers, error: offersInsertError } =
+    await supabaseClient
+      .from('offers')
+      .insert(offersPayload)
+      .select('id, title, status');
 
   if (offersInsertError) {
     throw offersInsertError;
@@ -461,30 +473,32 @@ async function seedOrganizerData() {
     throw offerCategoriesError;
   }
 
-  const { error: leadsInsertError } = await supabaseClient.from('leads').insert([
-    {
-      offer_id: publishedOffer.id,
-      child_name: 'Anna Test',
-      child_age: 9,
-      parent_name: 'Jan Kowalski',
-      parent_email: 'rodzic1@example.com',
-      parent_phone: '+48500100100',
-      message: 'Chciałbym zapisać dziecko od przyszłego tygodnia.',
-      offer_snapshot: { id: publishedOffer.id, title: publishedOffer.title },
-      status: 'submitted',
-    },
-    {
-      offer_id: publishedOffer.id,
-      child_name: 'Marek Test',
-      child_age: 10,
-      parent_name: 'Ewa Nowak',
-      parent_email: 'rodzic2@example.com',
-      parent_phone: '+48500100200',
-      message: 'Proszę o kontakt telefoniczny po 16:00.',
-      offer_snapshot: { id: publishedOffer.id, title: publishedOffer.title },
-      status: 'contacted',
-    },
-  ]);
+  const { error: leadsInsertError } = await supabaseClient
+    .from('leads')
+    .insert([
+      {
+        offer_id: publishedOffer.id,
+        child_name: 'Anna Test',
+        child_age: 9,
+        parent_name: 'Jan Kowalski',
+        parent_email: 'rodzic1@example.com',
+        parent_phone: '+48500100100',
+        message: 'Chciałbym zapisać dziecko od przyszłego tygodnia.',
+        offer_snapshot: { id: publishedOffer.id, title: publishedOffer.title },
+        status: 'submitted',
+      },
+      {
+        offer_id: publishedOffer.id,
+        child_name: 'Marek Test',
+        child_age: 10,
+        parent_name: 'Ewa Nowak',
+        parent_email: 'rodzic2@example.com',
+        parent_phone: '+48500100200',
+        message: 'Proszę o kontakt telefoniczny po 16:00.',
+        offer_snapshot: { id: publishedOffer.id, title: publishedOffer.title },
+        status: 'contacted',
+      },
+    ]);
 
   if (leadsInsertError) {
     throw leadsInsertError;
