@@ -27,16 +27,16 @@ export function RadiusSlider({
   const maxRadius = Math.max(...radiusOptions);
 
   return (
-    <div className='w-full space-y-3'>
+    <div className='w-full space-y-4'>
       <div className='flex items-center justify-between'>
         <Label
           htmlFor='radius-slider'
-          className={`text-sm font-medium ${disabled ? 'text-muted-foreground' : ''}`}
+          className={`text-base font-semibold ${disabled ? 'text-muted-foreground' : ''}`}
         >
           Promień wyszukiwania
         </Label>
         <span
-          className={`text-sm font-semibold ${disabled ? 'text-muted-foreground' : 'text-primary'}`}
+          className={`text-base font-semibold ${disabled ? 'text-muted-foreground' : 'text-primary'}`}
         >
           {currentRadius} km
         </span>
@@ -52,12 +52,12 @@ export function RadiusSlider({
         className='w-full rounded-full bg-white/60'
         aria-label='Wybierz promień wyszukiwania'
       />
-      <div className='flex justify-between text-xs text-muted-foreground'>
+      <div className='flex justify-between text-sm text-muted-foreground'>
         <span>{minRadius} km</span>
         <span>{maxRadius} km</span>
       </div>
       {disabled && (
-        <p className='text-xs text-muted-foreground'>
+        <p className='text-sm text-muted-foreground'>
           Wybierz lokalizację, aby ustawić promień
         </p>
       )}

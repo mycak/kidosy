@@ -17,6 +17,10 @@ import {
   type RegisterFormValues,
 } from '@/features/auth/schemas';
 import type { RegisterOrganizerResult } from '@/features/auth/api/auth.api';
+import {
+  AUTH_INPUT_CLASS,
+  AUTH_PRIMARY_CTA_CLASS,
+} from '@/features/auth/constants/ui';
 import { PATHS } from '@/shared/constants/paths';
 
 const REGISTER_ERROR_FALLBACK_MESSAGE =
@@ -125,6 +129,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                   id='register-email'
                   type='email'
                   autoComplete='email'
+                  className={AUTH_INPUT_CLASS}
                   value={field.state.value}
                   onChange={(event) => field.handleChange(event.target.value)}
                   onBlur={field.handleBlur}
@@ -158,6 +163,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                   id='register-password'
                   type='password'
                   autoComplete='new-password'
+                  className={AUTH_INPUT_CLASS}
                   value={field.state.value}
                   onChange={(event) => field.handleChange(event.target.value)}
                   onBlur={field.handleBlur}
@@ -199,6 +205,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                   id='register-confirm-password'
                   type='password'
                   autoComplete='new-password'
+                  className={AUTH_INPUT_CLASS}
                   value={field.state.value}
                   onChange={(event) => field.handleChange(event.target.value)}
                   onBlur={field.handleBlur}
@@ -233,6 +240,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 <Input
                   id='register-company-name'
                   type='text'
+                  className={AUTH_INPUT_CLASS}
                   value={field.state.value}
                   onChange={(event) => field.handleChange(event.target.value)}
                   onBlur={field.handleBlur}
@@ -266,6 +274,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                   id='register-phone'
                   type='tel'
                   autoComplete='tel'
+                  className={AUTH_INPUT_CLASS}
                   value={field.state.value}
                   onChange={(event) => field.handleChange(event.target.value)}
                   onBlur={field.handleBlur}
@@ -301,6 +310,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                   id='register-email-public'
                   type='email'
                   autoComplete='email'
+                  className={AUTH_INPUT_CLASS}
                   value={field.state.value}
                   onChange={(event) => field.handleChange(event.target.value)}
                   onBlur={field.handleBlur}
@@ -319,7 +329,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
 
       <Button
         type='submit'
-        className='w-full'
+        className={AUTH_PRIMARY_CTA_CLASS}
         disabled={registerMutation.isPending || !form.state.canSubmit}
       >
         {registerMutation.isPending ? 'Tworzenie konta...' : 'Zarejestruj się'}

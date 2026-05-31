@@ -298,7 +298,7 @@ export function GoogleMapContainer({
 
   return (
     <div className='relative h-full w-full'>
-      <div className='absolute right-4 top-4 z-10'>
+      <div className='absolute right-14 top-4 z-10'>
         <Button
           type='button'
           variant='secondary'

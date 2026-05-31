@@ -29,13 +29,15 @@ export function OfferScheduleTable({ schedules }: OfferScheduleTableProps) {
   }
 
   return (
-    <section className='bg-white rounded-lg border p-6'>
-      <h2 className='text-2xl font-bold mb-4'>Harmonogram zajęć</h2>
+    <section className='ui-panel rounded-[24px] p-6'>
+      <h2 className='mb-4 text-2xl font-semibold tracking-tight'>
+        Harmonogram zajęć
+      </h2>
 
-      <div className='overflow-x-auto'>
+      <div className='overflow-x-auto rounded-2xl border border-white/70 bg-white/70'>
         <table className='w-full'>
           <thead>
-            <tr className='border-b'>
+            <tr className='border-b bg-muted/50'>
               <th className='text-left py-2 px-4 font-semibold'>
                 Dzień tygodnia
               </th>

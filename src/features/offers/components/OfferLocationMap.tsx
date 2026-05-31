@@ -38,12 +38,12 @@ export function OfferLocationMap({ location, address }: OfferLocationMapProps) {
   }, [address, isLoaded, location]);
 
   return (
-    <section className='bg-white rounded-lg border p-6'>
-      <h2 className='text-2xl font-bold mb-4'>Lokalizacja</h2>
+    <section className='ui-panel rounded-[24px] p-6'>
+      <h2 className='mb-4 text-2xl font-semibold tracking-tight'>Lokalizacja</h2>
 
       <div className='space-y-4'>
         <div className='flex items-start gap-2'>
-          <span className='text-gray-600'>Adres:</span>
+          <span className='text-muted-foreground'>Adres:</span>
           <span className='font-medium'>{address}</span>
         </div>
 
@@ -57,7 +57,7 @@ export function OfferLocationMap({ location, address }: OfferLocationMapProps) {
         ) : (
           <div
             ref={mapRef}
-            className='w-full h-64 md:h-96 rounded-lg overflow-hidden bg-gray-100'
+            className='h-64 w-full overflow-hidden rounded-2xl bg-gray-100 md:h-96'
             role='img'
             aria-label={`Mapa lokalizacji: ${address}`}
           >
@@ -73,7 +73,7 @@ export function OfferLocationMap({ location, address }: OfferLocationMapProps) {
           href={`https://www.google.com/maps/search/?api=1&query=${location.coordinates[1]},${location.coordinates[0]}`}
           target='_blank'
           rel='noopener noreferrer'
-          className='inline-flex items-center text-primary hover:underline'
+          className='inline-flex items-center text-sm font-medium text-primary hover:underline'
         >
           Otwórz w Google Maps
           <svg

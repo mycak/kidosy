@@ -199,7 +199,7 @@ function MetricCard({
           <p className='mt-2 text-3xl font-semibold tracking-tight'>{value}</p>
         </div>
         <div
-          className={`flex size-12 items-center justify-center rounded-2xl bg-linear-to-br text-white shadow-lg ${accentClassName}`}
+          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br text-white shadow-lg ${accentClassName}`}
         >
           <Icon className='size-5' />
         </div>

@@ -13,14 +13,14 @@ export function OfferHeader({
   organizerName,
 }: OfferHeaderProps) {
   return (
-    <header className='space-y-2'>
+    <header className='ui-panel rounded-[24px] p-6'>
       <div className='flex items-start justify-between gap-4'>
-        <h1 className='text-3xl md:text-4xl font-bold text-gray-900'>
+        <h1 className='text-3xl font-semibold tracking-tight text-foreground md:text-4xl'>
           {title}
         </h1>
         <OfferStatusBadge status={status} />
       </div>
-      <p className='text-gray-600'>
+      <p className='mt-2 text-sm text-muted-foreground'>
         Organizator: <span className='font-medium'>{organizerName}</span>
       </p>
     </header>

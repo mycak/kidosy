@@ -19,6 +19,7 @@ import {
   OFFER_STATUS_FILTER_LABELS,
   getOfferStatusLabel,
 } from '@/features/organizer/constants/offer-status.constants';
+import { PRIMARY_CTA_CLASS } from '@/shared/constants/ui';
 import type {
   OrganizerOffersSortBy,
   SortOrder,
@@ -168,14 +169,12 @@ function OrganizerOffersListRoute() {
             Zarządzaj wszystkimi ofertami i monitoruj liczbę zgłoszeń.
           </p>
         </div>
-        <Link
-          to='/organizer/offers/new'
-          search={currentOffersSearch}
-          className='inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-transform hover:-translate-y-px'
-        >
-          <PlusCircle className='size-4' />
-          Dodaj ofertę
-        </Link>
+        <Button asChild className={PRIMARY_CTA_CLASS}>
+          <Link to='/organizer/offers/new' search={currentOffersSearch}>
+            <PlusCircle className='size-4' />
+            Dodaj ofertę
+          </Link>
+        </Button>
       </header>
 
       <div className='ui-panel flex flex-wrap gap-3 rounded-[24px] p-4'>

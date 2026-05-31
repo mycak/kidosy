@@ -16,6 +16,10 @@ import {
   passwordResetRequestFormSchema,
   type PasswordResetRequestFormValues,
 } from '@/features/auth/schemas';
+import {
+  AUTH_INPUT_CLASS,
+  AUTH_PRIMARY_CTA_CLASS,
+} from '@/features/auth/constants/ui';
 import { PATHS } from '@/shared/constants/paths';
 
 const PASSWORD_RESET_ERROR_FALLBACK_MESSAGE =
@@ -113,6 +117,7 @@ export function PasswordResetRequestForm({
                   id='password-reset-email'
                   type='email'
                   autoComplete='email'
+                  className={AUTH_INPUT_CLASS}
                   value={field.state.value}
                   onChange={(event) => field.handleChange(event.target.value)}
                   onBlur={field.handleBlur}
@@ -131,7 +136,7 @@ export function PasswordResetRequestForm({
 
       <Button
         type='submit'
-        className='w-full'
+        className={AUTH_PRIMARY_CTA_CLASS}
         disabled={passwordResetMutation.isPending || !form.state.canSubmit}
       >
         {passwordResetMutation.isPending

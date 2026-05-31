@@ -81,26 +81,26 @@ export function LocationSearchInput({
   };
 
   return (
-    <div className='relative flex w-full gap-2 sm:w-[280px]'>
+    <div className='relative flex w-full gap-2 sm:w-70'>
       <div className='relative flex-1'>
-        <MapPin className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+        <MapPin className='absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground' />
         <Input
           ref={inputRef}
           type='text'
           placeholder='Wpisz lokalizację...'
           value={inputValue}
           onChange={handleInputChange}
-          className='pl-10 pr-8 border-white/60 bg-white/80 shadow-sm focus-visible:ring-sky-200'
+          className='h-12 border-white/60 bg-white/80 pl-11 pr-10 text-base shadow-sm focus-visible:ring-sky-200'
           aria-label='Wyszukaj lokalizację'
         />
         {inputValue && (
           <button
             type='button'
             onClick={handleClear}
-            className='absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 hover:bg-muted'
+            className='absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1.5 hover:bg-muted'
             aria-label='Wyczyść lokalizację'
           >
-            <X className='h-4 w-4' />
+            <X className='h-4.5 w-4.5' />
           </button>
         )}
       </div>
@@ -110,7 +110,7 @@ export function LocationSearchInput({
           size='icon'
           onClick={handleUseCurrentLocation}
           disabled={isLoadingCurrentLocation}
-          className='shrink-0'
+          className='h-12 w-12 shrink-0'
           aria-label='Użyj mojej lokalizacji'
           title='Użyj mojej lokalizacji'
         >

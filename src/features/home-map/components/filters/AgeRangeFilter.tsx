@@ -32,12 +32,12 @@ export function AgeRangeFilter({
       : `${currentMin} - ${currentMax} lat`;
 
   return (
-    <div className='w-full space-y-3'>
+    <div className='w-full space-y-4'>
       <div className='flex items-center justify-between'>
-        <Label htmlFor='age-range-slider' className='text-sm font-medium'>
+        <Label htmlFor='age-range-slider' className='text-base font-semibold'>
           Wiek dziecka
         </Label>
-        <span className='text-sm font-semibold text-primary'>
+        <span className='text-base font-semibold text-primary'>
           {displayLabel}
         </span>
       </div>
@@ -51,7 +51,7 @@ export function AgeRangeFilter({
         className='w-full rounded-full bg-white/60'
         aria-label='Wybierz zakres wieku'
       />
-      <div className='flex justify-between text-xs text-muted-foreground'>
+      <div className='flex justify-between text-sm text-muted-foreground'>
         <span>{MIN_AGE_VALUE} lat</span>
         <span>{MAX_AGE_VALUE} lat</span>
       </div>

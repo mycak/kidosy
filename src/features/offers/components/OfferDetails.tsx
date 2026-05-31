@@ -12,10 +12,10 @@ export function OfferDetails({ offer }: OfferDetailsProps) {
   const dateRange = formatDateRange(offer.start_date, offer.end_date);
 
   return (
-    <section className='bg-white rounded-lg border p-6 space-y-4'>
-      <h2 className='text-2xl font-bold mb-4'>Szczegóły oferty</h2>
+    <section className='ui-panel space-y-5 rounded-[24px] p-6'>
+      <h2 className='text-2xl font-semibold tracking-tight'>Szczegóły oferty</h2>
 
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+      <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
         <DetailItem
           icon={<Users className='w-5 h-5' />}
           label='Przedział wiekowy'
@@ -43,8 +43,8 @@ export function OfferDetails({ offer }: OfferDetailsProps) {
 
       {offer.available_spots !== null &&
         offer.available_spots !== undefined && (
-          <div className='pt-4 border-t'>
-            <p className='text-sm text-gray-600'>Dostępne miejsca</p>
+          <div className='border-t pt-4'>
+            <p className='text-sm text-muted-foreground'>Dostępne miejsca</p>
             <p className='text-2xl font-bold text-primary'>
               {offer.available_spots === 0 ? (
                 <span className='text-red-600'>Brak wolnych miejsc</span>
@@ -62,13 +62,13 @@ export function OfferDetails({ offer }: OfferDetailsProps) {
         )}
 
       {offer.categories.length > 0 && (
-        <div className='pt-4 border-t'>
-          <p className='text-sm text-gray-600 mb-2'>Kategorie</p>
+        <div className='border-t pt-4'>
+          <p className='mb-2 text-sm text-muted-foreground'>Kategorie</p>
           <div className='flex flex-wrap gap-2'>
             {offer.categories.map((category) => (
               <span
                 key={category.id}
-                className='px-3 py-1 bg-primary/10 text-primary rounded-full text-sm'
+                className='rounded-full bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary'
               >
                 {translateCategory(category.name)}
               </span>
@@ -88,10 +88,10 @@ interface DetailItemProps {
 
 function DetailItem({ icon, label, value }: DetailItemProps) {
   return (
-    <div className='flex items-start gap-3'>
+    <div className='flex items-start gap-3 rounded-2xl border border-white/70 bg-white/60 p-3'>
       <div className='text-primary mt-0.5'>{icon}</div>
       <div>
-        <p className='text-sm text-gray-600'>{label}</p>
+        <p className='text-sm text-muted-foreground'>{label}</p>
         <p className='font-medium'>{value}</p>
       </div>
     </div>

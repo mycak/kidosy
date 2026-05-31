@@ -19,7 +19,7 @@ interface OrganizerLayoutProps {
 
 export function OrganizerLayout({ children }: OrganizerLayoutProps) {
   return (
-    <section className='mx-auto flex h-full w-full max-w-7xl flex-1 gap-6 px-4 py-4'>
+    <section className='mx-auto flex h-full min-h-0 w-full max-w-7xl flex-1 gap-6 overflow-hidden px-4 py-4'>
       <aside className='ui-entrance ui-panel sticky top-24 hidden w-60 shrink-0 overflow-hidden rounded-[28px] p-4 md:block'>
         <div className='mb-4 flex items-center justify-between gap-2'>
           <div>
@@ -90,8 +90,10 @@ export function OrganizerLayout({ children }: OrganizerLayoutProps) {
         </div>
       </aside>
 
-      <div className='ui-entrance ui-panel min-h-0 flex-1 overflow-hidden rounded-[28px] p-4 md:p-6'>
-        {children}
+      <div className='ui-entrance ui-panel min-h-0 flex flex-1 flex-col overflow-hidden rounded-[28px] p-4 md:p-6'>
+        <div className='ui-scrollbar-thin min-h-0 flex-1 overflow-y-auto pr-5 [scrollbar-gutter:stable] md:pr-6'>
+          {children}
+        </div>
       </div>
     </section>
   );

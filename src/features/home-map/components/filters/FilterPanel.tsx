@@ -127,9 +127,9 @@ export function FilterPanel({
         {hasActiveFilters && (
           <Button
             variant='ghost'
-            size='sm'
+            size='default'
             onClick={onResetFilters}
-            className='gap-1 text-muted-foreground hover:text-foreground'
+            className='h-11 gap-2 rounded-xl px-3 text-sm font-medium text-muted-foreground hover:text-foreground'
           >
             <X className='h-4 w-4' />
             Wyczyść wszystko
@@ -144,7 +144,7 @@ export function FilterPanel({
             placeholder='Szukaj zajęć...'
             value={filters.search || ''}
             onChange={handleSearchChange}
-            className='w-full border-white/60 bg-white/80 shadow-sm focus-visible:ring-sky-200'
+            className='h-12 w-full border-white/60 bg-white/80 px-4 text-base shadow-sm focus-visible:ring-sky-200'
             aria-label='Wyszukaj zajęcia'
           />
 

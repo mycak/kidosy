@@ -18,6 +18,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import {
+  PRIMARY_CTA_CLASS,
+  PRIMARY_CTA_FULL_WIDTH_CLASS,
+} from '@/shared/constants/ui';
 
 export function OfferDetailsPage() {
   const { offerId } = Route.useParams();
@@ -41,11 +46,11 @@ export function OfferDetailsPage() {
   const sanitizedDescription = DOMPurify.sanitize(offer.description);
 
   return (
-    <div className='container mx-auto px-4 py-8'>
+    <div className='mx-auto w-full max-w-7xl px-4 py-8'>
       <Breadcrumbs offerTitle={offer.title} />
 
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6'>
-        <div className='lg:col-span-2 space-y-6'>
+      <div className='mt-6 grid grid-cols-1 gap-8 lg:grid-cols-3'>
+        <div className='space-y-6 lg:col-span-2'>
           <OfferHeader
             title={offer.title}
             status={offer.status}
@@ -54,10 +59,12 @@ export function OfferDetailsPage() {
 
           <OfferImageGallery images={offer.images} />
 
-          <section className='prose max-w-none'>
-            <h2 className='text-2xl font-bold mb-4'>Opis zajęć</h2>
+          <section className='ui-panel rounded-[24px] p-6'>
+            <h2 className='mb-4 text-2xl font-semibold tracking-tight'>
+              Opis zajęć
+            </h2>
             <div
-              className='text-gray-700'
+              className='prose max-w-none text-foreground/90'
               dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
             />
           </section>
@@ -73,13 +80,13 @@ export function OfferDetailsPage() {
           {offer.organizer && <OrganizerInfo organizer={offer.organizer} />}
 
           {!leadSubmitted ? (
-            <button
+            <Button
               onClick={() => setIsLeadDialogOpen(true)}
-              className='w-full px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-lg font-semibold'
+              className={PRIMARY_CTA_FULL_WIDTH_CLASS}
               aria-label='Zgłoś dziecko na zajęcia'
             >
               Zgłoś dziecko
-            </button>
+            </Button>
           ) : (
             <LeadFormSuccess
               organizerName={offer.organizer?.company_name || 'Organizator'}
@@ -120,13 +127,13 @@ export function OfferDetailsPage() {
               organizerEmail={offer.organizer?.email_public || ''}
             />
             <div className='flex justify-end'>
-              <button
+              <Button
                 type='button'
                 onClick={() => setIsLeadSuccessDialogOpen(false)}
-                className='px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors'
+                className={PRIMARY_CTA_CLASS}
               >
                 Zamknij
-              </button>
+              </Button>
             </div>
           </div>
         </DialogContent>

@@ -6,6 +6,8 @@ import {
   useUpsertOrganizerProfileMutation,
 } from '@/features/organizer/api/organizer.queries';
 import { OrganizerToast } from '@/features/organizer/components/common/OrganizerToast';
+import { Button } from '@/components/ui/button';
+import { PRIMARY_CTA_CLASS } from '@/shared/constants/ui';
 
 export const Route = createFileRoute('/organizer/profile')({
   component: OrganizerProfileRoute,
@@ -148,15 +150,15 @@ function OrganizerProfileRoute() {
         </label>
 
         <div className='flex items-center justify-between gap-3'>
-          <button
+          <Button
             type='submit'
             disabled={updateOrganizerProfileMutation.isPending}
-            className='rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground disabled:opacity-50'
+            className={PRIMARY_CTA_CLASS}
           >
             {updateOrganizerProfileMutation.isPending
               ? 'Zapisywanie...'
               : 'Zapisz profil'}
-          </button>
+          </Button>
         </div>
       </form>
 

@@ -11,6 +11,10 @@ import {
   FieldLabel,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import {
+  AUTH_INPUT_CLASS,
+  AUTH_PRIMARY_CTA_CLASS,
+} from '@/features/auth/constants/ui';
 import { useLoginMutation } from '@/features/auth/hooks/useAuthMutations';
 import { loginFormSchema, type LoginFormValues } from '@/features/auth/schemas';
 import { PATHS } from '@/shared/constants/paths';
@@ -111,6 +115,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                   id='login-email'
                   type='email'
                   autoComplete='email'
+                  className={AUTH_INPUT_CLASS}
                   value={field.state.value}
                   onChange={(event) => field.handleChange(event.target.value)}
                   onBlur={field.handleBlur}
@@ -144,6 +149,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                   id='login-password'
                   type='password'
                   autoComplete='current-password'
+                  className={AUTH_INPUT_CLASS}
                   value={field.state.value}
                   onChange={(event) => field.handleChange(event.target.value)}
                   onBlur={field.handleBlur}
@@ -162,7 +168,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
       <Button
         type='submit'
-        className='w-full'
+        className={AUTH_PRIMARY_CTA_CLASS}
         disabled={loginMutation.isPending || !form.state.canSubmit}
       >
         {loginMutation.isPending ? 'Logowanie...' : 'Zaloguj się'}

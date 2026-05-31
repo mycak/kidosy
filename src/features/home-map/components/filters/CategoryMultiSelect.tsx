@@ -56,7 +56,7 @@ export function CategoryMultiSelect({
           role='combobox'
           aria-expanded={open}
           aria-label='Wybierz kategorie'
-          className='w-full justify-between border-white/60 bg-white/80 shadow-sm sm:w-[240px]'
+          className='h-12 w-full justify-between border-white/60 bg-white/80 px-4 text-base shadow-sm sm:w-65'
           disabled={isLoading}
         >
           <span className='truncate'>{displayText}</span>
@@ -64,7 +64,7 @@ export function CategoryMultiSelect({
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className='w-[240px] border-white/70 bg-white/90 p-0 shadow-md'
+        className='w-65 border-white/70 bg-white/90 p-0 shadow-md'
         align='start'
       >
         <Command className='bg-transparent'>

@@ -5,8 +5,8 @@ import {
   ChevronDown,
   LayoutDashboard,
   LogOut,
+  Menu,
   Sparkles,
-  UserRound,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -32,24 +32,11 @@ const BRAND_LETTERS = [
   { letter: 'y', className: 'text-teal-500' },
 ];
 
-const EMAIL_PREVIEW_LENGTH = 24;
 const HOME_SEARCH_DEFAULTS: HomeMapSearchParams = {
   page: 1,
   sort_by: 'date_created',
   sort_order: 'desc',
 };
-
-function buildUserDisplayName(email: string | undefined): string {
-  if (!email) {
-    return 'Organizator';
-  }
-
-  if (email.length <= EMAIL_PREVIEW_LENGTH) {
-    return email;
-  }
-
-  return `${email.slice(0, EMAIL_PREVIEW_LENGTH)}…`;
-}
 
 export function AppHeader() {
   const navigate = useNavigate();
@@ -103,23 +90,26 @@ export function AppHeader() {
               <Button
                 type='button'
                 variant='outline'
-                size='sm'
-                className='gap-2 rounded-full border-white/60 bg-white/80 px-3 shadow-sm'
+                className='h-11 gap-2 rounded-xl border-white/70 bg-white/90 px-4 text-sm font-semibold shadow-sm'
               >
-                <UserRound className='size-3.5' />
-                <span className='max-w-32 truncate'>
-                  {buildUserDisplayName(user.email)}
-                </span>
-                <ChevronDown className='size-3.5 opacity-70' />
+                <Menu className='size-4' />
+                <span>Menu</span>
+                <ChevronDown className='size-4 opacity-70' />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align='end' className='w-56'>
+            <DropdownMenuContent
+              align='end'
+              className='w-64 rounded-2xl border-white/70 bg-white/95 p-1.5 shadow-xl backdrop-blur-xl'
+            >
               <DropdownMenuLabel className='flex items-center justify-between gap-2'>
-                <span>Konto organizatora</span>
+                <span className='max-w-40 truncate'>
+                  {user.email ?? 'Konto organizatora'}
+                </span>
                 <Badge variant='secondary'>online</Badge>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem
+                className='h-10 rounded-xl text-sm font-medium'
                 onSelect={() => {
                   void navigate({ to: PATHS.ORGANIZER.DASHBOARD });
                 }}
@@ -128,6 +118,7 @@ export function AppHeader() {
                 Dashboard
               </DropdownMenuItem>
               <DropdownMenuItem
+                className='h-10 rounded-xl text-sm font-medium'
                 onSelect={(event) => {
                   event.preventDefault();
                   void handleLogout();

@@ -35,6 +35,19 @@ import type { HomeMapFilters, SortBy, SortOrder } from '../types';
 import type { HomeMapSearchParams } from '../schemas';
 import { DEFAULT_PER_PAGE } from '../types';
 
+const SCROLL_DELTA_THRESHOLD = 2;
+const OFFERS_LIST_SCROLL_SELECTOR = '[data-offers-list-scroll="true"]';
+
+function isScrollEventInsideOffersList(
+  eventTarget: EventTarget | null,
+): boolean {
+  if (!(eventTarget instanceof Element)) {
+    return false;
+  }
+
+  return eventTarget.closest(OFFERS_LIST_SCROLL_SELECTOR) !== null;
+}
+
 export function HomeMapView() {
   const search = Route.useSearch() as unknown as HomeMapSearchParams;
   const navigate = useNavigate({ from: '/' });
@@ -45,6 +58,7 @@ export function HomeMapView() {
   const [isFiltersDialogOpen, setIsFiltersDialogOpen] = useState(false);
   const [isInfoPanelCollapsed, setIsInfoPanelCollapsed] = useState(false);
   const lastScrollTopRef = useRef(0);
+  const lastTouchYRef = useRef<number | null>(null);
 
   const { getCurrentLocation, isLoading: isLoadingLocation } = useGeolocation();
 
@@ -145,7 +159,6 @@ export function HomeMapView() {
 
     const handleScroll = () => {
       const currentScrollTop = mainScrollContainer.scrollTop;
-      const SCROLL_DELTA_THRESHOLD = 2;
 
       if (currentScrollTop <= SCROLL_DELTA_THRESHOLD) {
         setIsInfoPanelCollapsed(false);
@@ -176,6 +189,72 @@ export function HomeMapView() {
     };
   }, []);
 
+  const handleWheelCapture = useCallback(
+    (event: React.WheelEvent<HTMLElement>) => {
+      const isUpwardScrollInsideOffersList =
+        event.deltaY < -SCROLL_DELTA_THRESHOLD &&
+        isScrollEventInsideOffersList(event.target);
+
+      if (isUpwardScrollInsideOffersList) {
+        return;
+      }
+
+      if (event.deltaY > SCROLL_DELTA_THRESHOLD) {
+        setIsInfoPanelCollapsed(true);
+      } else if (event.deltaY < -SCROLL_DELTA_THRESHOLD) {
+        setIsInfoPanelCollapsed(false);
+      }
+    },
+    [],
+  );
+
+  const handleTouchStartCapture = useCallback(
+    (event: React.TouchEvent<HTMLElement>) => {
+      const firstTouch = event.touches[0];
+
+      if (!firstTouch) {
+        return;
+      }
+
+      lastTouchYRef.current = firstTouch.clientY;
+    },
+    [],
+  );
+
+  const handleTouchMoveCapture = useCallback(
+    (event: React.TouchEvent<HTMLElement>) => {
+      const firstTouch = event.touches[0];
+
+      if (!firstTouch || lastTouchYRef.current === null) {
+        return;
+      }
+
+      const touchDeltaY = lastTouchYRef.current - firstTouch.clientY;
+
+      const isUpwardScrollInsideOffersList =
+        touchDeltaY < -SCROLL_DELTA_THRESHOLD &&
+        isScrollEventInsideOffersList(event.target);
+
+      if (isUpwardScrollInsideOffersList) {
+        lastTouchYRef.current = firstTouch.clientY;
+        return;
+      }
+
+      if (touchDeltaY > SCROLL_DELTA_THRESHOLD) {
+        setIsInfoPanelCollapsed(true);
+      } else if (touchDeltaY < -SCROLL_DELTA_THRESHOLD) {
+        setIsInfoPanelCollapsed(false);
+      }
+
+      lastTouchYRef.current = firstTouch.clientY;
+    },
+    [],
+  );
+
+  const handleTouchEndCapture = useCallback(() => {
+    lastTouchYRef.current = null;
+  }, []);
+
   if (isError) {
     return (
       <div className='flex min-h-screen items-center justify-center p-8'>
@@ -204,7 +283,13 @@ export function HomeMapView() {
   }
 
   return (
-    <section className='flex min-h-0 flex-1 flex-col overflow-hidden bg-linear-to-br from-sky-50/50 via-emerald-50/50 to-rose-50/50'>
+    <section
+      className='flex min-h-0 flex-1 flex-col overflow-hidden bg-linear-to-br from-sky-50/50 via-emerald-50/50 to-rose-50/50'
+      onWheelCapture={handleWheelCapture}
+      onTouchStartCapture={handleTouchStartCapture}
+      onTouchMoveCapture={handleTouchMoveCapture}
+      onTouchEndCapture={handleTouchEndCapture}
+    >
       <div
         className={`overflow-hidden border-b border-white/70 bg-linear-to-r from-sky-100/70 via-white to-emerald-100/70 shadow-[0_10px_24px_-18px_rgb(15_23_42/0.35)] backdrop-blur-xl transition-all duration-300 ${
           isInfoPanelCollapsed
@@ -276,7 +361,7 @@ export function HomeMapView() {
                 Filtry
               </Button>
             </DialogTrigger>
-            <DialogContent className='max-h-[90dvh] max-w-[calc(100vw-2rem)] overflow-y-auto p-5 sm:max-w-[calc(100vw-3rem)] sm:p-6 lg:max-w-4xl'>
+            <DialogContent className='max-h-[90dvh] max-w-[calc(100vw-2rem)] overflow-y-auto p-6 sm:max-w-[calc(100vw-3rem)] sm:p-7 lg:max-w-4xl **:data-[slot=dialog-close]:right-3 **:data-[slot=dialog-close]:top-3 **:data-[slot=dialog-close]:size-11 **:data-[slot=dialog-close]:rounded-xl [&_[data-slot=dialog-close]_svg]:size-5'>
               <DialogHeader>
                 <DialogTitle>Filtry wyszukiwania</DialogTitle>
                 <DialogDescription className='sr-only'>

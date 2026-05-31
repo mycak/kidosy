@@ -7,6 +7,7 @@ import type {
 } from '@/features/organizer/api/organizer.types';
 import { buildDefaultOfferFormValues } from '@/features/organizer/api/organizer.api';
 import { organizerOfferFormSchema } from '@/features/organizer/schemas/offer-form.schema';
+import { PRIMARY_CTA_CLASS } from '@/shared/constants/ui';
 
 const VALIDATION_ISSUE_PATH_INDEX = 0;
 const MAX_MAIN_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
@@ -469,7 +470,11 @@ export function OrganizerOfferForm({
       </fieldset>
 
       <div className='flex justify-end lg:col-span-2'>
-        <Button type='submit' disabled={isPending || !formValues.offerTypeId}>
+        <Button
+          type='submit'
+          className={PRIMARY_CTA_CLASS}
+          disabled={isPending || !formValues.offerTypeId}
+        >
           {isPending ? 'Zapisywanie...' : submitLabel}
         </Button>
       </div>

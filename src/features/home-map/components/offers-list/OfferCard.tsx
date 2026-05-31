@@ -14,6 +14,7 @@ interface OfferCardProps {
 
 const CATEGORY_LIMIT = 2;
 const MAIN_IMAGE_DISPLAY_ORDER = 0;
+const IMAGE_THUMBNAIL_SIZE_CLASS = 'h-24 w-28';
 
 function getPublicImageUrl(storagePath: string): string {
   return `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${storagePath}`;
@@ -52,74 +53,80 @@ export function OfferCard({
       onBlur={() => onHover(null)}
       tabIndex={0}
     >
-      <div className='mx-4 mt-4 overflow-hidden rounded-4xl border border-white/70 bg-muted/40'>
-        {mainOfferImageUrl ? (
-          <img
-            src={mainOfferImageUrl}
-            alt={`Zdjęcie oferty ${offer.title}`}
-            className='aspect-video w-full object-cover'
-            loading='lazy'
-            onError={() => setHasImageLoadingError(true)}
-          />
-        ) : (
-          <div className='flex aspect-video w-full items-center justify-center bg-linear-to-br from-sky-50 to-emerald-50 text-muted-foreground'>
-            <div className='flex flex-col items-center gap-2 text-xs font-medium uppercase tracking-[0.12em]'>
-              <ImageIcon className='size-6 text-sky-500' />
-              Brak zdjęcia głównego
-            </div>
-          </div>
-        )}
-      </div>
-
-      <CardHeader className='pb-3'>
+      <CardHeader className='pb-2'>
         <CardTitle className='text-base'>{offer.title}</CardTitle>
       </CardHeader>
       <CardContent className='space-y-3 text-sm'>
-        <p className='text-muted-foreground line-clamp-2'>
-          {offer.description}
-        </p>
-        <div className='space-y-2'>
-          <div className='flex items-center gap-2'>
-            <MapPin className='h-4 w-4 text-muted-foreground' />
-            <span className='line-clamp-1'>{offer.address}</span>
+        <div className='flex items-start gap-3'>
+          <div
+            className={`shrink-0 overflow-hidden rounded-2xl border border-white/70 bg-muted/40 ${IMAGE_THUMBNAIL_SIZE_CLASS}`}
+          >
+            {mainOfferImageUrl ? (
+              <img
+                src={mainOfferImageUrl}
+                alt={`Zdjęcie oferty ${offer.title}`}
+                className='h-full w-full object-cover'
+                loading='lazy'
+                onError={() => setHasImageLoadingError(true)}
+              />
+            ) : (
+              <div className='flex h-full w-full items-center justify-center bg-linear-to-br from-sky-50 to-emerald-50 text-muted-foreground'>
+                <div className='flex flex-col items-center gap-1 text-[10px] font-medium uppercase tracking-widest'>
+                  <ImageIcon className='size-4 text-sky-500' />
+                  Brak zdjęcia
+                </div>
+              </div>
+            )}
           </div>
 
-          <div className='flex items-center gap-2'>
-            <Users className='h-4 w-4 text-muted-foreground' />
-            <span>
-              Wiek: {minAge}-{maxAge} lat
-            </span>
-          </div>
+          <div className='min-w-0 flex-1 space-y-2'>
+            <p className='text-muted-foreground line-clamp-2'>
+              {offer.description}
+            </p>
 
-          {offer.available_spots !== undefined && (
-            <div className='inline-flex items-center rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white shadow-sm'>
-              Wolne miejsca:
-              <span className='ml-1 text-sm font-bold'>
-                {offer.available_spots}
-              </span>
-            </div>
-          )}
-
-          {offer.start_date && (
             <div className='flex items-center gap-2'>
-              <Calendar className='h-4 w-4 text-muted-foreground' />
+              <MapPin className='h-4 w-4 text-muted-foreground' />
+              <span className='line-clamp-1'>{offer.address}</span>
+            </div>
+
+            <div className='flex items-center gap-2'>
+              <Users className='h-4 w-4 text-muted-foreground' />
               <span>
-                Od: {new Date(offer.start_date).toLocaleDateString('pl-PL')}
+                Wiek: {minAge}-{maxAge} lat
               </span>
             </div>
-          )}
+
+            {offer.available_spots !== undefined && (
+              <div className='inline-flex items-center rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white shadow-sm'>
+                Wolne miejsca:
+                <span className='ml-1 text-sm font-bold'>
+                  {offer.available_spots}
+                </span>
+              </div>
+            )}
+
+            {offer.start_date && (
+              <div className='flex items-center gap-2'>
+                <Calendar className='h-4 w-4 text-muted-foreground' />
+                <span>
+                  Od: {new Date(offer.start_date).toLocaleDateString('pl-PL')}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
+
         <div className='flex flex-wrap gap-1'>
           {offer.categories.slice(0, CATEGORY_LIMIT).map((category) => (
             <span
               key={category.id}
-              className='rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary'
+              className='rounded-full bg-primary/15 px-3 py-1.5 text-sm font-semibold text-primary shadow-xs ring-1 ring-primary/20'
             >
               {translateCategory(category.name)}
             </span>
           ))}
           {offer.categories.length > CATEGORY_LIMIT && (
-            <span className='rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground'>
+            <span className='rounded-full bg-muted px-3 py-1.5 text-sm font-semibold text-muted-foreground ring-1 ring-border/70'>
               +{offer.categories.length - CATEGORY_LIMIT}
             </span>
           )}
