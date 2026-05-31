@@ -1,5 +1,6 @@
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router';
 import { supabaseClient } from '@/db/supabase.client';
+import { OrganizerLayout } from '@/features/organizer/components/layout/OrganizerLayout';
 import { PATHS } from '@/shared/constants/paths';
 
 export const Route = createFileRoute('/organizer')({
@@ -18,5 +19,9 @@ export const Route = createFileRoute('/organizer')({
 });
 
 function OrganizerRoute() {
-  return <Outlet />;
+  return (
+    <OrganizerLayout>
+      <Outlet />
+    </OrganizerLayout>
+  );
 }

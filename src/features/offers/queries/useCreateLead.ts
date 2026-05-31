@@ -10,6 +10,27 @@ interface CreateLeadParams {
 export const useCreateLead = () => {
   const queryClient = useQueryClient();
 
+  const sendLeadNotification = async (leadIds: string[]) => {
+    if (leadIds.length === 0) {
+      return;
+    }
+
+    const { error } = await supabaseClient.functions.invoke(
+      'send-lead-notification',
+      {
+        body: {
+          leadIds,
+        },
+      },
+    );
+
+    if (error) {
+      throw new Error(
+        error.message || 'Nie udało się wysłać maila do organizatora',
+      );
+    }
+  };
+
   return useMutation({
     mutationFn: async ({
       offerId,
@@ -49,6 +70,17 @@ export const useCreateLead = () => {
       queryClient.invalidateQueries({
         queryKey: ['offers', variables.offerId],
       });
+    },
+    onSettled: async (data) => {
+      if (!data?.leadIds?.length) {
+        return;
+      }
+
+      try {
+        await sendLeadNotification(data.leadIds);
+      } catch (error) {
+        console.error('Nie udało się wysłać maila do organizatora:', error);
+      }
     },
     meta: {
       errorMessage: 'Nie udało się wysłać zgłoszenia. Spróbuj ponownie.',

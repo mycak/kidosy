@@ -551,6 +551,7 @@ export type CreateLeadResponseDto = Pick<
   DbLead,
   'id' | 'offer_id' | 'status' | 'created_at'
 > & {
+  leadIds: string[];
   message: string;
 };
 

@@ -9,22 +9,48 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as OrganizerRouteRouteImport } from './routes/organizer/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OrganizerProfileRouteImport } from './routes/organizer/profile'
+import { Route as OrganizerOffersRouteImport } from './routes/organizer/offers'
+import { Route as OrganizerLeadsRouteImport } from './routes/organizer/leads'
 import { Route as OrganizerDashboardRouteImport } from './routes/organizer/dashboard'
 import { Route as OffersOfferIdRouteImport } from './routes/offers/$offerId'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthPasswordResetRouteImport } from './routes/auth/password-reset'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as OrganizerOffersNewRouteImport } from './routes/organizer/offers.new'
+import { Route as OrganizerOffersIdEditRouteImport } from './routes/organizer/offers.$id.edit'
 
+const OrganizerRouteRoute = OrganizerRouteRouteImport.update({
+  id: '/organizer',
+  path: '/organizer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrganizerProfileRoute = OrganizerProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => OrganizerRouteRoute,
+} as any)
+const OrganizerOffersRoute = OrganizerOffersRouteImport.update({
+  id: '/offers',
+  path: '/offers',
+  getParentRoute: () => OrganizerRouteRoute,
+} as any)
+const OrganizerLeadsRoute = OrganizerLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => OrganizerRouteRoute,
+} as any)
 const OrganizerDashboardRoute = OrganizerDashboardRouteImport.update({
-  id: '/organizer/dashboard',
-  path: '/organizer/dashboard',
-  getParentRoute: () => rootRouteImport,
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => OrganizerRouteRoute,
 } as any)
 const OffersOfferIdRoute = OffersOfferIdRouteImport.update({
   id: '/offers/$offerId',
@@ -46,70 +72,123 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrganizerOffersNewRoute = OrganizerOffersNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => OrganizerOffersRoute,
+} as any)
+const OrganizerOffersIdEditRoute = OrganizerOffersIdEditRouteImport.update({
+  id: '/$id/edit',
+  path: '/$id/edit',
+  getParentRoute: () => OrganizerOffersRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/organizer': typeof OrganizerRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
   '/auth/password-reset': typeof AuthPasswordResetRoute
   '/auth/register': typeof AuthRegisterRoute
   '/offers/$offerId': typeof OffersOfferIdRoute
   '/organizer/dashboard': typeof OrganizerDashboardRoute
+  '/organizer/leads': typeof OrganizerLeadsRoute
+  '/organizer/offers': typeof OrganizerOffersRouteWithChildren
+  '/organizer/profile': typeof OrganizerProfileRoute
+  '/organizer/offers/new': typeof OrganizerOffersNewRoute
+  '/organizer/offers/$id/edit': typeof OrganizerOffersIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/organizer': typeof OrganizerRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
   '/auth/password-reset': typeof AuthPasswordResetRoute
   '/auth/register': typeof AuthRegisterRoute
   '/offers/$offerId': typeof OffersOfferIdRoute
   '/organizer/dashboard': typeof OrganizerDashboardRoute
+  '/organizer/leads': typeof OrganizerLeadsRoute
+  '/organizer/offers': typeof OrganizerOffersRouteWithChildren
+  '/organizer/profile': typeof OrganizerProfileRoute
+  '/organizer/offers/new': typeof OrganizerOffersNewRoute
+  '/organizer/offers/$id/edit': typeof OrganizerOffersIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/organizer': typeof OrganizerRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
   '/auth/password-reset': typeof AuthPasswordResetRoute
   '/auth/register': typeof AuthRegisterRoute
   '/offers/$offerId': typeof OffersOfferIdRoute
   '/organizer/dashboard': typeof OrganizerDashboardRoute
+  '/organizer/leads': typeof OrganizerLeadsRoute
+  '/organizer/offers': typeof OrganizerOffersRouteWithChildren
+  '/organizer/profile': typeof OrganizerProfileRoute
+  '/organizer/offers/new': typeof OrganizerOffersNewRoute
+  '/organizer/offers/$id/edit': typeof OrganizerOffersIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/organizer'
     | '/auth/login'
     | '/auth/password-reset'
     | '/auth/register'
     | '/offers/$offerId'
     | '/organizer/dashboard'
+    | '/organizer/leads'
+    | '/organizer/offers'
+    | '/organizer/profile'
+    | '/organizer/offers/new'
+    | '/organizer/offers/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/organizer'
     | '/auth/login'
     | '/auth/password-reset'
     | '/auth/register'
     | '/offers/$offerId'
     | '/organizer/dashboard'
+    | '/organizer/leads'
+    | '/organizer/offers'
+    | '/organizer/profile'
+    | '/organizer/offers/new'
+    | '/organizer/offers/$id/edit'
   id:
     | '__root__'
     | '/'
+    | '/organizer'
     | '/auth/login'
     | '/auth/password-reset'
     | '/auth/register'
     | '/offers/$offerId'
     | '/organizer/dashboard'
+    | '/organizer/leads'
+    | '/organizer/offers'
+    | '/organizer/profile'
+    | '/organizer/offers/new'
+    | '/organizer/offers/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  OrganizerRouteRoute: typeof OrganizerRouteRouteWithChildren
   AuthLoginRoute: typeof AuthLoginRoute
   AuthPasswordResetRoute: typeof AuthPasswordResetRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
   OffersOfferIdRoute: typeof OffersOfferIdRoute
-  OrganizerDashboardRoute: typeof OrganizerDashboardRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/organizer': {
+      id: '/organizer'
+      path: '/organizer'
+      fullPath: '/organizer'
+      preLoaderRoute: typeof OrganizerRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -117,12 +196,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/organizer/profile': {
+      id: '/organizer/profile'
+      path: '/profile'
+      fullPath: '/organizer/profile'
+      preLoaderRoute: typeof OrganizerProfileRouteImport
+      parentRoute: typeof OrganizerRouteRoute
+    }
+    '/organizer/offers': {
+      id: '/organizer/offers'
+      path: '/offers'
+      fullPath: '/organizer/offers'
+      preLoaderRoute: typeof OrganizerOffersRouteImport
+      parentRoute: typeof OrganizerRouteRoute
+    }
+    '/organizer/leads': {
+      id: '/organizer/leads'
+      path: '/leads'
+      fullPath: '/organizer/leads'
+      preLoaderRoute: typeof OrganizerLeadsRouteImport
+      parentRoute: typeof OrganizerRouteRoute
+    }
     '/organizer/dashboard': {
       id: '/organizer/dashboard'
-      path: '/organizer/dashboard'
+      path: '/dashboard'
       fullPath: '/organizer/dashboard'
       preLoaderRoute: typeof OrganizerDashboardRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof OrganizerRouteRoute
     }
     '/offers/$offerId': {
       id: '/offers/$offerId'
@@ -152,16 +252,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/organizer/offers/new': {
+      id: '/organizer/offers/new'
+      path: '/new'
+      fullPath: '/organizer/offers/new'
+      preLoaderRoute: typeof OrganizerOffersNewRouteImport
+      parentRoute: typeof OrganizerOffersRoute
+    }
+    '/organizer/offers/$id/edit': {
+      id: '/organizer/offers/$id/edit'
+      path: '/$id/edit'
+      fullPath: '/organizer/offers/$id/edit'
+      preLoaderRoute: typeof OrganizerOffersIdEditRouteImport
+      parentRoute: typeof OrganizerOffersRoute
+    }
   }
 }
 
+interface OrganizerOffersRouteChildren {
+  OrganizerOffersNewRoute: typeof OrganizerOffersNewRoute
+  OrganizerOffersIdEditRoute: typeof OrganizerOffersIdEditRoute
+}
+
+const OrganizerOffersRouteChildren: OrganizerOffersRouteChildren = {
+  OrganizerOffersNewRoute: OrganizerOffersNewRoute,
+  OrganizerOffersIdEditRoute: OrganizerOffersIdEditRoute,
+}
+
+const OrganizerOffersRouteWithChildren = OrganizerOffersRoute._addFileChildren(
+  OrganizerOffersRouteChildren,
+)
+
+interface OrganizerRouteRouteChildren {
+  OrganizerDashboardRoute: typeof OrganizerDashboardRoute
+  OrganizerLeadsRoute: typeof OrganizerLeadsRoute
+  OrganizerOffersRoute: typeof OrganizerOffersRouteWithChildren
+  OrganizerProfileRoute: typeof OrganizerProfileRoute
+}
+
+const OrganizerRouteRouteChildren: OrganizerRouteRouteChildren = {
+  OrganizerDashboardRoute: OrganizerDashboardRoute,
+  OrganizerLeadsRoute: OrganizerLeadsRoute,
+  OrganizerOffersRoute: OrganizerOffersRouteWithChildren,
+  OrganizerProfileRoute: OrganizerProfileRoute,
+}
+
+const OrganizerRouteRouteWithChildren = OrganizerRouteRoute._addFileChildren(
+  OrganizerRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  OrganizerRouteRoute: OrganizerRouteRouteWithChildren,
   AuthLoginRoute: AuthLoginRoute,
   AuthPasswordResetRoute: AuthPasswordResetRoute,
   AuthRegisterRoute: AuthRegisterRoute,
   OffersOfferIdRoute: OffersOfferIdRoute,
-  OrganizerDashboardRoute: OrganizerDashboardRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

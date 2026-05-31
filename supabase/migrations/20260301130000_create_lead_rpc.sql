@@ -29,6 +29,7 @@ declare
   child_payload jsonb;
   inserted_lead_id uuid;
   first_inserted_lead_id uuid;
+  inserted_lead_ids jsonb := '[]'::jsonb;
   inserted_children_count integer := 0;
   normalized_parent_email text := lower(trim(p_parent_email));
   normalized_parent_phone text := trim(p_parent_phone);
@@ -128,6 +129,7 @@ begin
       jsonb_build_object(
         'id', matched_offer.id,
         'title', matched_offer.title,
+        'user_id', matched_offer.user_id,
         'status', matched_offer.status,
         'start_date', matched_offer.start_date,
         'end_date', matched_offer.end_date,
@@ -138,6 +140,8 @@ begin
       'submitted'
     )
     returning id into inserted_lead_id;
+
+    inserted_lead_ids := inserted_lead_ids || to_jsonb(inserted_lead_id);
 
     if first_inserted_lead_id is null then
       first_inserted_lead_id := inserted_lead_id;
@@ -160,6 +164,7 @@ begin
       'created_at', response_timestamp,
       'updated_at', response_timestamp
     ),
+    'leadIds', inserted_lead_ids,
     'message',
     'Dziękujemy za zainteresowanie! Organizator odezwie się wkrótce.'
   );
@@ -188,4 +193,4 @@ comment on function public.create_lead(
   text,
   boolean,
   boolean
-) is 'Creates parent lead records for a published offer (one row per child) and returns lead confirmation payload.';
+) is 'Creates parent lead records for a published offer (one row per child), returns lead confirmation payload, and includes inserted lead IDs for notification workflows.';

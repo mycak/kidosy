@@ -87,6 +87,7 @@ export type ContactPreference = 'email' | 'phone' | 'sms';
 
 export interface CreateLeadResponse {
   lead: LeadDto;
+  leadIds: string[];
   message: string;
 }
 

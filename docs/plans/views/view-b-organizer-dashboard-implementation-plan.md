@@ -133,14 +133,14 @@ src/features/organizer/
 
 Plan zakłada spięcie widoków organizera z istniejącymi planami endpointów.
 
-| Widok                            | Endpointy (docelowo)                          | Powiązane plany |
-| -------------------------------- | --------------------------------------------- | --------------- |
-| `/organizer/dashboard`           | `GET /my-offers` + agregacje statusów/leads  | `my-offers-implementation-plan.md` |
-| `/organizer/offers`              | `GET /my-offers`, `DELETE /offers/:id`       | `my-offers-implementation-plan.md`, `delete-offer-implementation-plan.md` |
-| `/organizer/offers/new`          | `POST /offers`, słowniki                      | `create-implementation-plan.md`, `dictionaries-*-implementation-plan.md` |
-| `/organizer/offers/:offerId/edit`| `PATCH /offers/:id`, upload/remove image      | `update-implementation-plan.md`, `delete-image-implementation-plan.md` |
-| `/organizer/leads`               | `GET /organizer/leads`, `PATCH /organizer/leads/:id` | `organizer-leads-implementation-plan.md`, `organizer-leads-update-implementation-plan.md` |
-| `/organizer/profile`             | `GET /auth/profile`, `PATCH /auth/profile`    | `auth-profile-get-implementation-plan.md`, `auth-profile-update-implementation-plan.md` |
+| Widok                             | Endpointy (docelowo)                                 | Powiązane plany                                                                           |
+| --------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `/organizer/dashboard`            | `GET /my-offers` + agregacje statusów/leads          | `my-offers-implementation-plan.md`                                                        |
+| `/organizer/offers`               | `GET /my-offers`, `DELETE /offers/:id`               | `my-offers-implementation-plan.md`, `delete-offer-implementation-plan.md`                 |
+| `/organizer/offers/new`           | `POST /offers`, słowniki                             | `create-implementation-plan.md`, `dictionaries-*-implementation-plan.md`                  |
+| `/organizer/offers/:offerId/edit` | `PATCH /offers/:id`, upload/remove image             | `update-implementation-plan.md`, `delete-image-implementation-plan.md`                    |
+| `/organizer/leads`                | `GET /organizer/leads`, `PATCH /organizer/leads/:id` | `organizer-leads-implementation-plan.md`, `organizer-leads-update-implementation-plan.md` |
+| `/organizer/profile`              | `GET /auth/profile`, `PATCH /auth/profile`           | `auth-profile-get-implementation-plan.md`, `auth-profile-update-implementation-plan.md`   |
 
 Uwagi:
 
