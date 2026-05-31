@@ -650,7 +650,10 @@ function normalizeFileExtension(fileName: string): string {
   return extension;
 }
 
-function buildMainOfferImageObjectPath(offerId: string, fileName: string): string {
+function buildMainOfferImageObjectPath(
+  offerId: string,
+  fileName: string,
+): string {
   const timestamp = Date.now();
   const extension = normalizeFileExtension(fileName);
   return `offers/${offerId}/main-${timestamp}.${extension}`;
@@ -669,7 +672,9 @@ function toBucketObjectPath(storagePath: string): string {
   return storagePath;
 }
 
-async function fetchOfferMainImages(offerId: string): Promise<MainOfferImageRecord[]> {
+async function fetchOfferMainImages(
+  offerId: string,
+): Promise<MainOfferImageRecord[]> {
   const { data, error } = await supabaseClient
     .from('offer_images')
     .select('id, storage_path')
@@ -723,7 +728,9 @@ async function upsertMainOfferImage(
       .in('id', obsoleteMainImageIds);
 
     if (deleteObsoleteRowsError) {
-      throw new Error('Nie udało się odświeżyć danych głównego zdjęcia oferty.');
+      throw new Error(
+        'Nie udało się odświeżyć danych głównego zdjęcia oferty.',
+      );
     }
   }
 }

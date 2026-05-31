@@ -15,7 +15,10 @@ const MAIN_IMAGE_ERROR_KEY = 'mainImageFile';
 type OrganizerOfferFormFieldName = keyof OrganizerOfferFormValues;
 
 type OrganizerOfferFormErrors = Partial<
-  Record<OrganizerOfferFormFieldName | typeof MAIN_IMAGE_ERROR_KEY | 'form', string>
+  Record<
+    OrganizerOfferFormFieldName | typeof MAIN_IMAGE_ERROR_KEY | 'form',
+    string
+  >
 >;
 
 type OrganizerOfferFormProps = {
