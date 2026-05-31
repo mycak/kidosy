@@ -1,6 +1,8 @@
+import { useMemo, useState } from 'react';
 import { Calendar, MapPin, Users, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { ImageIcon } from 'lucide-react';
 import { translateCategory } from '@/lib/translations';
 import type { PublicOfferListItemDto } from '@/types';
 
@@ -12,6 +14,11 @@ interface OfferCardProps {
 }
 
 const CATEGORY_LIMIT = 2;
+const MAIN_IMAGE_DISPLAY_ORDER = 0;
+
+function getPublicImageUrl(storagePath: string): string {
+  return `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${storagePath}`;
+}
 
 export function OfferCard({
   offer,
@@ -21,6 +28,18 @@ export function OfferCard({
 }: OfferCardProps) {
   const minAge = Math.min(...offer.ages);
   const maxAge = Math.max(...offer.ages);
+  const [hasImageLoadingError, setHasImageLoadingError] = useState(false);
+
+  const mainOfferImage = useMemo(() => {
+    return [...offer.images].sort(
+      (imageA, imageB) => imageA.display_order - imageB.display_order,
+    )[MAIN_IMAGE_DISPLAY_ORDER];
+  }, [offer.images]);
+
+  const mainOfferImageUrl =
+    mainOfferImage && !hasImageLoadingError
+      ? getPublicImageUrl(mainOfferImage.storage_path)
+      : undefined;
 
   return (
     <Card
@@ -34,6 +53,25 @@ export function OfferCard({
       onBlur={() => onHover(null)}
       tabIndex={0}
     >
+      <div className='mx-4 mt-4 overflow-hidden rounded-4xl border border-white/70 bg-muted/40'>
+        {mainOfferImageUrl ? (
+          <img
+            src={mainOfferImageUrl}
+            alt={`Zdjęcie oferty ${offer.title}`}
+            className='aspect-video w-full object-cover'
+            loading='lazy'
+            onError={() => setHasImageLoadingError(true)}
+          />
+        ) : (
+          <div className='flex aspect-video w-full items-center justify-center bg-linear-to-br from-sky-50 to-emerald-50 text-muted-foreground'>
+            <div className='flex flex-col items-center gap-2 text-xs font-medium uppercase tracking-[0.12em]'>
+              <ImageIcon className='size-6 text-sky-500' />
+              Brak zdjęcia głównego
+            </div>
+          </div>
+        )}
+      </div>
+
       <CardHeader className='pb-3'>
         <CardTitle className='text-base'>{offer.title}</CardTitle>
       </CardHeader>
@@ -48,8 +86,9 @@ export function OfferCard({
           </div>
 
           <div className='flex items-center gap-2'>
-            <Users className='h-4 w-4 text-muted-foreground' />
-            <span>
+          <div className='inline-flex items-center rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white shadow-sm'>
+            Wolne miejsca:
+            <span className='ml-1 text-sm font-bold'>{offer.available_spots}</span>
               Wiek: {minAge}-{maxAge} lat
             </span>
           </div>

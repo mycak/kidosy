@@ -1,10 +1,5 @@
 import type { ReactNode } from 'react';
-import {
-  MapPinned,
-  ShieldCheck,
-  Sparkles,
-  Users,
-} from 'lucide-react';
+import { MapPinned, ShieldCheck, Sparkles, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   Card,

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import {
   ArrowRight,
@@ -44,6 +44,7 @@ export function HomeMapView() {
   const [hoveredOfferId, setHoveredOfferId] = useState<string | null>(null);
   const [isFiltersDialogOpen, setIsFiltersDialogOpen] = useState(false);
   const [isInfoPanelCollapsed, setIsInfoPanelCollapsed] = useState(false);
+  const lastScrollTopRef = useRef(0);
 
   const { getCurrentLocation, isLoading: isLoadingLocation } = useGeolocation();
 
@@ -133,8 +134,46 @@ export function HomeMapView() {
     }
   };
 
-  const collapseInfoPanel = useCallback(() => {
-    setIsInfoPanelCollapsed(true);
+  useEffect(() => {
+    const mainScrollContainer = document.getElementById('app-main-scroll');
+
+    if (!mainScrollContainer) {
+      return;
+    }
+
+    lastScrollTopRef.current = mainScrollContainer.scrollTop;
+
+    const handleScroll = () => {
+      const currentScrollTop = mainScrollContainer.scrollTop;
+      const SCROLL_DELTA_THRESHOLD = 2;
+
+      if (currentScrollTop <= SCROLL_DELTA_THRESHOLD) {
+        setIsInfoPanelCollapsed(false);
+        lastScrollTopRef.current = currentScrollTop;
+        return;
+      }
+
+      const wasScrolledDown =
+        currentScrollTop > lastScrollTopRef.current + SCROLL_DELTA_THRESHOLD;
+      const wasScrolledUp =
+        currentScrollTop < lastScrollTopRef.current - SCROLL_DELTA_THRESHOLD;
+
+      if (wasScrolledDown) {
+        setIsInfoPanelCollapsed(true);
+      } else if (wasScrolledUp) {
+        setIsInfoPanelCollapsed(false);
+      }
+
+      lastScrollTopRef.current = currentScrollTop;
+    };
+
+    mainScrollContainer.addEventListener('scroll', handleScroll, {
+      passive: true,
+    });
+
+    return () => {
+      mainScrollContainer.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   if (isError) {
@@ -165,12 +204,7 @@ export function HomeMapView() {
   }
 
   return (
-    <section
-      className='flex min-h-0 flex-1 flex-col overflow-hidden bg-linear-to-br from-sky-50/50 via-emerald-50/50 to-rose-50/50'
-      onWheelCapture={collapseInfoPanel}
-      onScrollCapture={collapseInfoPanel}
-      onTouchMoveCapture={collapseInfoPanel}
-    >
+    <section className='flex min-h-0 flex-1 flex-col overflow-hidden bg-linear-to-br from-sky-50/50 via-emerald-50/50 to-rose-50/50'>
       <div
         className={`overflow-hidden border-b border-white/70 bg-linear-to-r from-sky-100/70 via-white to-emerald-100/70 shadow-[0_10px_24px_-18px_rgb(15_23_42/0.35)] backdrop-blur-xl transition-all duration-300 ${
           isInfoPanelCollapsed
@@ -181,12 +215,18 @@ export function HomeMapView() {
         <div className='mx-auto flex max-w-7xl flex-col gap-3 lg:flex-row lg:items-center lg:justify-between'>
           <div className='flex max-w-3xl flex-col'>
             <div className='flex items-center gap-2'>
-              <Badge variant='secondary' className='gap-1.5 rounded-full px-3 py-1'>
+              <Badge
+                variant='secondary'
+                className='gap-1.5 rounded-full px-3 py-1'
+              >
                 <Sparkles className='size-3' />
                 Wyszukiwarka zajęć
               </Badge>
 
-              <Badge variant='outline' className='hidden gap-1.5 rounded-full px-3 py-1 md:inline-flex'>
+              <Badge
+                variant='outline'
+                className='hidden gap-1.5 rounded-full px-3 py-1 md:inline-flex'
+              >
                 <BriefcaseBusiness className='size-3' />
                 narzędzia dla organizatorów
               </Badge>

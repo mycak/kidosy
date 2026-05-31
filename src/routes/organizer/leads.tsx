@@ -296,7 +296,10 @@ function OrganizerLeadsRoute() {
                   draftStatusesByLeadId[leadItem.id] ?? leadItem.status;
 
                 return (
-                  <tr key={leadItem.id} className='border-t transition-colors hover:bg-white/70'>
+                  <tr
+                    key={leadItem.id}
+                    className='border-t transition-colors hover:bg-white/70'
+                  >
                     <td className='px-3 py-2'>
                       <p className='font-medium'>{leadItem.childName}</p>
                       <p className='text-xs text-muted-foreground'>

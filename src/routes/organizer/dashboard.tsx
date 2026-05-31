@@ -183,7 +183,12 @@ type MetricCardProps = {
   accentClassName: string;
 };
 
-function MetricCard({ label, value, icon: Icon, accentClassName }: MetricCardProps) {
+function MetricCard({
+  label,
+  value,
+  icon: Icon,
+  accentClassName,
+}: MetricCardProps) {
   return (
     <article className='ui-panel rounded-[24px] p-4'>
       <div className='flex items-center justify-between gap-3'>
@@ -193,7 +198,9 @@ function MetricCard({ label, value, icon: Icon, accentClassName }: MetricCardPro
           </p>
           <p className='mt-2 text-3xl font-semibold tracking-tight'>{value}</p>
         </div>
-        <div className={`flex size-12 items-center justify-center rounded-2xl bg-linear-to-br text-white shadow-lg ${accentClassName}`}>
+        <div
+          className={`flex size-12 items-center justify-center rounded-2xl bg-linear-to-br text-white shadow-lg ${accentClassName}`}
+        >
           <Icon className='size-5' />
         </div>
       </div>

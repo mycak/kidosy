@@ -149,7 +149,10 @@ function OrganizerOffersListRoute() {
       <header className='ui-entrance ui-panel flex flex-wrap items-center justify-between gap-3 rounded-[28px] p-5'>
         <div>
           <div className='flex flex-wrap items-center gap-2'>
-            <Badge variant='secondary' className='gap-1.5 rounded-full px-3 py-1'>
+            <Badge
+              variant='secondary'
+              className='gap-1.5 rounded-full px-3 py-1'
+            >
               <Sparkles className='size-3' />
               oferta hub
             </Badge>
@@ -250,8 +253,8 @@ function OrganizerOffersListRoute() {
             Brak ofert dla wybranego filtra.
           </p>
           <p className='mt-2 max-w-2xl leading-6'>
-            Spróbuj zmienić status lub dodaj nową ofertę, jeśli chcesz zacząć
-            od świeżego wpisu.
+            Spróbuj zmienić status lub dodaj nową ofertę, jeśli chcesz zacząć od
+            świeżego wpisu.
           </p>
         </div>
       ) : (
@@ -269,7 +272,10 @@ function OrganizerOffersListRoute() {
             </thead>
             <tbody>
               {offers.map((offerItem) => (
-                <tr key={offerItem.id} className='border-t transition-colors hover:bg-white/70'>
+                <tr
+                  key={offerItem.id}
+                  className='border-t transition-colors hover:bg-white/70'
+                >
                   <td className='px-3 py-2'>
                     <p className='font-medium'>{offerItem.title}</p>
                     <p className='text-xs text-muted-foreground'>
@@ -278,7 +284,10 @@ function OrganizerOffersListRoute() {
                   </td>
                   <td className='px-3 py-2'>{offerItem.offerTypeName}</td>
                   <td className='px-3 py-2'>
-                    <Badge variant='outline' className='rounded-full px-2 py-0.5'>
+                    <Badge
+                      variant='outline'
+                      className='rounded-full px-2 py-0.5'
+                    >
                       {getOfferStatusLabel(offerItem.status)}
                     </Badge>
                   </td>

@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { Baby, ChevronDown, LayoutDashboard, LogOut, Sparkles, UserRound } from 'lucide-react';
+import {
+  Baby,
+  ChevronDown,
+  LayoutDashboard,
+  LogOut,
+  Sparkles,
+  UserRound,
+} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -76,7 +83,10 @@ export function AppHeader() {
           <span className='flex flex-col'>
             <span className='text-2xl font-bold tracking-tight sm:text-3xl'>
               {BRAND_LETTERS.map((item, index) => (
-                <span key={`${item.letter}-${index}`} className={item.className}>
+                <span
+                  key={`${item.letter}-${index}`}
+                  className={item.className}
+                >
                   {item.letter}
                 </span>
               ))}
@@ -90,9 +100,16 @@ export function AppHeader() {
         {user ? (
           <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <DropdownMenuTrigger asChild>
-              <Button type='button' variant='outline' size='sm' className='gap-2 rounded-full border-white/60 bg-white/80 px-3 shadow-sm'>
+              <Button
+                type='button'
+                variant='outline'
+                size='sm'
+                className='gap-2 rounded-full border-white/60 bg-white/80 px-3 shadow-sm'
+              >
                 <UserRound className='size-3.5' />
-                <span className='max-w-32 truncate'>{buildUserDisplayName(user.email)}</span>
+                <span className='max-w-32 truncate'>
+                  {buildUserDisplayName(user.email)}
+                </span>
                 <ChevronDown className='size-3.5 opacity-70' />
               </Button>
             </DropdownMenuTrigger>

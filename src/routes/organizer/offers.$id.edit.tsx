@@ -118,7 +118,9 @@ function OrganizerOffersEditRoute() {
             <PencilLine className='size-4' />
           </div>
           <div>
-            <h1 className='text-3xl font-semibold tracking-tight'>Edytuj ofertę</h1>
+            <h1 className='text-3xl font-semibold tracking-tight'>
+              Edytuj ofertę
+            </h1>
             <p className='text-sm text-muted-foreground'>
               Edycja oferty o identyfikatorze {id}.
             </p>
