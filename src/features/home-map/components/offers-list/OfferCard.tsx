@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react';
-import { Calendar, MapPin, Users, ArrowRight } from 'lucide-react';
+import { Calendar, MapPin, Users, ArrowRight, ImageIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ImageIcon } from 'lucide-react';
 import { translateCategory } from '@/lib/translations';
 import type { PublicOfferListItemDto } from '@/types';
 
@@ -86,12 +85,20 @@ export function OfferCard({
           </div>
 
           <div className='flex items-center gap-2'>
-          <div className='inline-flex items-center rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white shadow-sm'>
-            Wolne miejsca:
-            <span className='ml-1 text-sm font-bold'>{offer.available_spots}</span>
+            <Users className='h-4 w-4 text-muted-foreground' />
+            <span>
               Wiek: {minAge}-{maxAge} lat
             </span>
           </div>
+
+          {offer.available_spots !== undefined && (
+            <div className='inline-flex items-center rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white shadow-sm'>
+              Wolne miejsca:
+              <span className='ml-1 text-sm font-bold'>
+                {offer.available_spots}
+              </span>
+            </div>
+          )}
 
           {offer.start_date && (
             <div className='flex items-center gap-2'>
@@ -102,11 +109,6 @@ export function OfferCard({
             </div>
           )}
         </div>
-        {offer.available_spots !== undefined && (
-          <div className='text-xs font-medium text-primary'>
-            Wolne miejsca: {offer.available_spots}
-          </div>
-        )}
         <div className='flex flex-wrap gap-1'>
           {offer.categories.slice(0, CATEGORY_LIMIT).map((category) => (
             <span
